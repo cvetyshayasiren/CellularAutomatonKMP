@@ -17,10 +17,11 @@ java {
     targetCompatibility = JavaVersion.VERSION_17
 }
 
-publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            from(components["java"])
+subprojects {
+    apply { plugin("maven-publish")}
+    publishing {
+        publications {
+            create<MavenPublication>("maven")
         }
     }
 }
