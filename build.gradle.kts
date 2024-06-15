@@ -18,10 +18,12 @@ java {
 }
 
 subprojects {
-    apply { plugin("maven-publish")}
-    publishing {
-        publications {
-            create<MavenPublication>("maven")
+    if(this.name == "CellularAutomatonCompose") {
+        apply { plugin("maven-publish")}
+        publishing {
+            publications {
+                create<MavenPublication>("maven")
+            }
         }
     }
 }
