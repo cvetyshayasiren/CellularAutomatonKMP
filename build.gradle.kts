@@ -1,6 +1,3 @@
-import com.android.build.gradle.internal.packaging.fromProjectProperties
-import org.gradle.kotlin.dsl.support.kotlinCompilerOptions
-
 plugins {
     // this is necessary to avoid the plugins to be loaded multiple times
     // in each subproject's classloader
@@ -20,15 +17,18 @@ java {
 
 subprojects {
     if(this.name == "CellularAutomatonCompose") {
-        apply { plugin("maven-publish") }
-        publishing {
-            publications {
-                create<MavenPublication>("maven") {
-                    groupId = this.groupId
-                    artifactId = this.name
-                    version = this.version
-
-                    artifact("$buildDir/outputs/aar/${artifactId}-release.aar")
+        apply {
+            plugin("maven-publish")
+        }
+        afterEvaluate {
+            publishing {
+                publications {
+                    create<MavenPublication>("maven") {
+                        groupId = this.groupId
+                        artifactId = this.name
+                        version = this.version
+                        from(components["kotlin"])
+                    }
                 }
             }
         }
