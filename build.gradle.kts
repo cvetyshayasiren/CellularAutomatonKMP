@@ -1,3 +1,4 @@
+import com.android.build.gradle.internal.packaging.fromProjectProperties
 import org.gradle.kotlin.dsl.support.kotlinCompilerOptions
 
 plugins {
@@ -9,9 +10,21 @@ plugins {
     alias(libs.plugins.compose.compiler) apply false
     alias(libs.plugins.kotlinMultiplatform) apply false
     java
+    `maven-publish`
 }
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
+}
+
+subprojects {
+    apply { plugin("maven-publish") }
+    publishing {
+        publications {
+            create<MavenPublication>("maven") {
+                fromProjectProperties(true)
+            }
+        }
+    }
 }
