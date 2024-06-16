@@ -15,20 +15,19 @@ java {
     targetCompatibility = JavaVersion.VERSION_17
 }
 
-subprojects {
-    if(this.name == "CellularAutomatonCompose") {
-        afterEvaluate {
-            publishing {
-                publications.clear()
-                publications {
-                    create<MavenPublication>("release") {
-                        groupId = this.groupId
-                        artifactId = this.name
-                        version = this.version
-                        from(components["kotlin"])
-                    }
-                }
-            }
-        }
-    }
-}
+//subprojects {
+//    if(this.name == "CellularAutomatonCompose") {
+//        afterEvaluate {
+//            publishing {
+//                publications {
+//                    create<MavenPublication>("release") {
+//                        groupId = this.groupId
+//                        artifactId = this.name
+//                        version = this.version
+//                        from(components["kotlin"])
+//                    }
+//                }
+//            }
+//        }
+//    }
+//}
