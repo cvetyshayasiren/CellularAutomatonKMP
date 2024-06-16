@@ -19,11 +19,15 @@ java {
 }
 
 subprojects {
-    apply { plugin("maven-publish") }
-    publishing {
-        publications {
-            create<MavenPublication>("maven") {
-                fromProjectProperties(true)
+    if(this.name == "CellularAutomatonCompose") {
+        apply { plugin("maven-publish") }
+        publishing {
+            publications {
+                create<MavenPublication>("maven") {
+                    groupId = "lal.lol"
+                    artifactId = "libraryRe"
+                    version = "1.14"
+                }
             }
         }
     }
