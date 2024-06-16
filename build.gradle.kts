@@ -24,9 +24,11 @@ subprojects {
         publishing {
             publications {
                 create<MavenPublication>("maven") {
-                    groupId = "lal.lol"
-                    artifactId = "libraryRe"
-                    version = "1.14"
+                    groupId = this.groupId
+                    artifactId = this.name
+                    version = this.version
+
+                    artifact("$buildDir/outputs/aar/${artifactId}-release.aar")
                 }
             }
         }
