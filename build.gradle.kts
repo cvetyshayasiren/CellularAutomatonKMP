@@ -19,8 +19,9 @@ subprojects {
     if(this.name == "CellularAutomatonCompose") {
         afterEvaluate {
             publishing {
+                publications.clear()
                 publications {
-                    create<MavenPublication>("maven") {
+                    create<MavenPublication>("release") {
                         groupId = this.groupId
                         artifactId = this.name
                         version = this.version
