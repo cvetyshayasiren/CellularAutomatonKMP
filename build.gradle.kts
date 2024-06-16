@@ -23,7 +23,7 @@ subprojects {
         afterEvaluate {
             publishing {
                 publications {
-                    create<MavenPublication>("maven") {
+                    create<MavenPublication>("ca") {
                         groupId = this.groupId
                         artifactId = this.name
                         version = this.version
