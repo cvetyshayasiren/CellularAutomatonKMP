@@ -15,18 +15,17 @@ java {
     targetCompatibility = JavaVersion.VERSION_17
 }
 
-afterEvaluate {
+subprojects {
     if(this.name == "CellularAutomatonCompose") {
-        apply {
-            plugin("maven-publish")
-        }
-        publishing {
-            publications {
-                create<MavenPublication>("maven") {
-                    groupId = this.groupId
-                    artifactId = this.name
-                    version = this.version
-                    from(components["kotlin"])
+        afterEvaluate {
+            publishing {
+                publications {
+                    create<MavenPublication>("maven") {
+                        groupId = this.groupId
+                        artifactId = this.name
+                        version = this.version
+                        from(components["kotlin"])
+                    }
                 }
             }
         }
