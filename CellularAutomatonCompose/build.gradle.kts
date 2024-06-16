@@ -45,3 +45,15 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 }
+
+publishing {
+    publications {
+        publications.clear()
+        create<MavenPublication>("release") {
+            groupId = this.groupId
+            artifactId = this.name
+            version = this.version
+            from(components["kotlin"])
+        }
+    }
+}
