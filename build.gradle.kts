@@ -6,14 +6,14 @@ plugins {
     alias(libs.plugins.jetbrainsCompose) apply false
     alias(libs.plugins.compose.compiler) apply false
     alias(libs.plugins.kotlinMultiplatform) apply false
-//    java
-    `maven-publish`
+    java
+//    `maven-publish`
 }
 
-//java {
-//    sourceCompatibility = JavaVersion.VERSION_17
-//    targetCompatibility = JavaVersion.VERSION_17
-//}
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
 
 //subprojects {
 //    if(this.name == "CellularAutomatonCompose") {
