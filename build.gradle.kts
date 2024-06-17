@@ -13,20 +13,3 @@ java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
 }
-
-//subprojects {
-//    if(this.name == "CellularAutomatonCompose") {
-//        afterEvaluate {
-//            publishing {
-//                publications {
-//                    create<MavenPublication>("release") {
-//                        groupId = this.groupId
-//                        artifactId = this.name
-//                        version = this.version
-//                        from(components["kotlin"])
-//                    }
-//                }
-//            }
-//        }
-//    }
-//}

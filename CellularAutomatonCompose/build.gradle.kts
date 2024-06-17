@@ -46,18 +46,14 @@ android {
     }
 }
 
-publishing.publications.clear()
-
-afterEvaluate {
-    publishing {
-        publications.clear()
-        publications {
-            create<MavenPublication>("release") {
-                groupId = this.groupId
-                artifactId = this.name
-                version = this.version
-                from(components["kotlin"])
-            }
+publishing {
+    publications.clear()
+    publications {
+        create<MavenPublication>("release") {
+            groupId = this.groupId
+            artifactId = this.name
+            version = this.version
+            from(components["kotlin"])
         }
     }
 }
