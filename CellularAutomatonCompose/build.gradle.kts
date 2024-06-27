@@ -48,7 +48,6 @@ android {
 
 publishing {
     publications {
-        clear()
         create<MavenPublication>("release") {
             groupId = this.groupId
             artifactId = this.name

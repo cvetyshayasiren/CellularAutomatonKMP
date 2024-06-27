@@ -1,5 +1,7 @@
 package cellularAutomaton
 
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.IntSize
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -41,6 +43,34 @@ class CAFillRandomFigure(
             }
         }
     }
-
     override val generation: CAGeneration = CAGeneration(getRandomCellsState(fillingRatio))
+}
+
+class CAFigureFromImageBitmap(
+    private val imageBitmap: ImageBitmap,
+    private val aging: Int = 0,
+    private val scale: Float = 1f
+    ): CellularAutomatonFigure {
+    override val generation: CAGeneration = bitmapToGeneration()
+    private fun bitmapToGeneration(): CAGeneration {
+
+        val newWidth = (imageBitmap.width * scale).toInt()
+        val newHeight = (imageBitmap.height * scale).toInt()
+        val scaledImage = imageBitmap.scale(newWidth, newHeight)
+
+        val pixelsArray = IntArray(newWidth * newHeight)
+        scaledImage.readPixels(pixelsArray)
+        val figureList = MutableList(newHeight) { MutableList(newWidth) { 0 } }
+        pixelsArray.forEachIndexed { index, pixel ->
+            Color(pixel).let { color ->
+                val average = (color.red + color.blue + color.green) / 3
+                val cell = when(aging) {
+                    0 -> if (average < .5) 0 else 1
+                    else -> (aging * average).toInt()
+                }
+                figureList[index / newWidth][index % newWidth] = cell
+            }
+        }
+        return CAGeneration(figureList)
+    }
 }

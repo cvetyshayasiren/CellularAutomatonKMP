@@ -33,6 +33,8 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
+            //file picker
+            implementation("io.github.vinceglb:filekit-compose:0.6.1")
             //library
             implementation(project(":CellularAutomatonCompose"))
         }
