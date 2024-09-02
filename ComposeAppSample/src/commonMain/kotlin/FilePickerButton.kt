@@ -27,11 +27,10 @@ fun FilePickerButton(
 ) {
     var imageText by remember { mutableStateOf("load image") }
 
-    val fileType = listOf("jpg", "png")
-
     val launcher = rememberFilePickerLauncher(type = PickerType.Image) { file ->
         CoroutineScope(Dispatchers.IO).launch {
             file?.let { platformFile ->
+                println(platformFile.file.extension)
                 onPick(
                     CAFigureFromImageBitmap(
                         imageBitmap = imageBitmapFromBytes(platformFile.readBytes()),

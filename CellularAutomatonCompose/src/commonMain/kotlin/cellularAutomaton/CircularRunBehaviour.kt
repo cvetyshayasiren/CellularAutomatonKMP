@@ -7,8 +7,8 @@ interface CircularRunBehaviour {
 
 class CircularRunRandomBehaviour(
     override val cycles: Int? = null,
-    val width: Int,
-    val height: Int,
+    val width: Int = 20,
+    val height: Int = 20,
     private val fillingRatio: Float? = null
 ): CircularRunBehaviour {
     override fun nextFigure(): CellularAutomatonFigure {
