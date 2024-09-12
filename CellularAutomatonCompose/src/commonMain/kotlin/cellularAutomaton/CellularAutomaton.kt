@@ -159,7 +159,7 @@ class CellularAutomaton(
         }
     }
 
-    suspend fun circularRun(behaviour: CircularRunBehaviour = CircularRunRandomBehaviour()) {
+    suspend fun circularRun(behaviour: CARunBehaviour = CircularRunRandomBehaviour()) {
         if(_isRun.value) { return }
         var remainingCycles = behaviour.cycles ?: 0
         _isRun.value = true
