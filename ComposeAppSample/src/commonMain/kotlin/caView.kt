@@ -1,7 +1,6 @@
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -13,29 +12,31 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.IntSize
-import androidx.compose.ui.unit.dp
-import cellularAutomaton.CADrawState
-import cellularAutomaton.CARandomFigure
-import cellularAutomaton.CellularAutomaton
-import cellularAutomaton.CellularAutomatonRule
+import cellularAutomaton.CaCellState
+import cellularAutomaton.CaFieldState
+import cellularAutomaton.CaFigure
+import cellularAutomaton.CaRule
+import cellularAutomaton.CaRunProperties
+import cellularAutomaton.CellularAutomatonState
 
 @Composable
 fun CaView(
-    ca: CellularAutomaton = CellularAutomaton(
-        figure = CARandomFigure(50, 50, .5f),
-        rule = CellularAutomatonRule(),
-        drawState = CADrawState(
-            backgroundColor = MaterialTheme.colorScheme.background,
-            primaryCellColor = MaterialTheme.colorScheme.primary,
-            secondaryCellColor = MaterialTheme.colorScheme.secondary,
-            delay = 100L,
+    caState: CellularAutomatonState = CellularAutomatonState(
+        figure = CaFigure.FromRandom(50, 50, .5f),
+        rule = CaRule(),
+        cellState = CaCellState(
+            color = MaterialTheme.colorScheme.primary,
+            agedColor = MaterialTheme.colorScheme.secondary,
             cornerRadius = .5f,
-            drawGrid = false,
-            marginsRatio = .9f,
+            marginsRatio = .9f
+        ),
+        fieldState = CaFieldState(
+            isDrawGrid = false,
             isDrawable = true,
-            isZoomable = true,
-            padding = 10.dp,
-            shape = RoundedCornerShape(10.dp)
+            isZoomable = true
+        ),
+        runProperties = CaRunProperties(
+            delay = 100L
         )
     )
 ) {
@@ -50,10 +51,10 @@ fun CaView(
     ) {state ->
         when(state.width > state.height) {
             true -> {
-                HorizontalView(ca, size)
+                HorizontalView(caState, size)
             }
             false -> {
-                VerticalView(ca, size)
+                VerticalView(caState, size)
             }
         }
     }

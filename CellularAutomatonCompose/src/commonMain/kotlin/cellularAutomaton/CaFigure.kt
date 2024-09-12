@@ -9,14 +9,14 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
-interface CellularAutomatonFigure {
+interface CaFigure {
     val generation: CAGeneration
     val height: Int
         get() = generation.cellsState.value.size
     val width: Int
         get() = generation.cellsState.value[0].size
 
-    fun nextStep(rule: CellularAutomatonRule = CellularAutomatonRule()) {
+    fun nextStep(rule: CaRule = CaRule()) {
         val cells = generation.cellsState.value
         val newGeneration = MutableList(cells.size) { MutableList(cells[0].size) { 0 } }
         cells.forEachIndexed { i, line ->
@@ -42,9 +42,9 @@ interface CellularAutomatonFigure {
         generation.setCellsState(newGeneration)
     }
 
-    fun moreOrEqualThan(other: CellularAutomatonFigure) = width >= other.width && height >= other.height
+    fun moreOrEqualThan(other: CaFigure) = width >= other.width && height >= other.height
 
-    fun addFigure(x: Int = 0, y: Int = 0, figure: CellularAutomatonFigure) {
+    fun addFigure(x: Int = 0, y: Int = 0, figure: CaFigure) {
         require(this.moreOrEqualThan(figure)) { "the figure should be smaller" }
         require(x in 0 until width && y in 0 until height) { "x or y out of range" }
 
@@ -57,7 +57,7 @@ interface CellularAutomatonFigure {
         generation.setCellsState(newGeneration)
     }
 
-    fun addFigureInCenter(figure: CellularAutomatonFigure) {
+    fun addFigureInCenter(figure: CaFigure) {
         val x = width / 2 - figure.width / 2
         val y = height / 2 - figure.height / 2
         addFigure(x, y, figure)
@@ -66,8 +66,8 @@ interface CellularAutomatonFigure {
     fun switchCell(x: Int, y: Int) {
         require(x in 0 until width && y in 0 until height) { "x or y out of range" }
         when (generation.cellsState.value[y][x]) {
-            0 -> addFigure(x, y, CAOneFigure())
-            else -> addFigure(x, y, CAZeroFigure())
+            0 -> addFigure(x, y, One())
+            else -> addFigure(x, y, Zero())
         }
     }
 
@@ -89,30 +89,37 @@ interface CellularAutomatonFigure {
 
 
     //IMPLEMENTATIONS
-    class Basic(override val generation: CAGeneration): CellularAutomatonFigure
+    class Zero: CaFigure {
+        override val generation: CAGeneration = CAGeneration(listOf(listOf(0)))
+    }
 
-    class Randomise(
+    class One: CaFigure {
+        override val generation: CAGeneration = CAGeneration(listOf(listOf(1)))
+    }
+
+    class FromGeneration(override val generation: CAGeneration): CaFigure
+
+    class Rectangle(
+        override val width: Int = 2,
+        override val height: Int = 2,
+    ): CaFigure {
+        override val generation: CAGeneration = CAGeneration(List(height) { List(width) { 1 } })
+    }
+
+    class FromRandom(
         override val width: Int = 20,
         override val height: Int = 20,
         private val fillingRatio: Float? = .5f,
-    ): CellularAutomatonFigure {
+    ): CaFigure {
         override val generation: CAGeneration = CAGeneration(getRandomCellsState(fillingRatio))
     }
-
-    class Zero(
-        override val generation: CAGeneration = CAGeneration(listOf(listOf(0)))
-    ): CellularAutomatonFigure
-
-    class One(
-        override val generation: CAGeneration = CAGeneration(listOf(listOf(1)))
-    ): CellularAutomatonFigure
 
     class FillRandomise(
         private val size: StateFlow<IntSize>,
         private val fillingRatio: Float? = .5f,
         private val cellSize: Int = 100,
         scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
-    ): CellularAutomatonFigure {
+    ): CaFigure {
         override var width: Int = (size.value.width/cellSize).coerceAtLeast(1)
         override var height: Int = (size.value.height/cellSize).coerceAtLeast(1)
         init {
@@ -131,7 +138,7 @@ interface CellularAutomatonFigure {
         private val imageBitmap: ImageBitmap,
         private val aging: Int = 0,
         private val scale: Float = 1f
-    ): CellularAutomatonFigure {
+    ): CaFigure {
         override val generation: CAGeneration = bitmapToGeneration()
         private fun bitmapToGeneration(): CAGeneration {
 

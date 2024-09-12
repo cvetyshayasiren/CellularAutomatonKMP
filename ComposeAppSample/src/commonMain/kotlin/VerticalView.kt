@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -21,17 +22,17 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import cellularAutomaton.CellularAutomaton
+import cellularAutomaton.CellularAutomatonState
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun VerticalView(ca: CellularAutomaton, size: IntSize) {
+fun VerticalView(caState: CellularAutomatonState, size: IntSize) {
     val scrollState = rememberScrollState()
 
     val scope = rememberCoroutineScope()
@@ -45,7 +46,7 @@ fun VerticalView(ca: CellularAutomaton, size: IntSize) {
         sheetShape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
         scaffoldState = scaffoldState,
         sheetDragHandle = {
-            StartButtonView(ca, buttonHeight)
+            StartButtonView(caState, buttonHeight)
         },
         sheetPeekHeight = buttonHeight,
         sheetContent = {
@@ -55,7 +56,7 @@ fun VerticalView(ca: CellularAutomaton, size: IntSize) {
                     .background(MaterialTheme.colorScheme.surface)
                     .verticalScroll(scrollState)
             ) {
-                ControlView(ca)
+                ControlView(caState)
             }
             IconButton(
                 modifier = Modifier.align(Alignment.CenterHorizontally).fillMaxWidth(),
@@ -73,6 +74,6 @@ fun VerticalView(ca: CellularAutomaton, size: IntSize) {
                 .padding(20.dp)
                 .shadow(10.dp, RoundedCornerShape(20.dp))
                 .clip(RoundedCornerShape(20.dp))
-        ) { ca.Draw() }
+        ) { CellularAutomaton(caState, modifier = Modifier.size(400.dp)) }
     }
 }

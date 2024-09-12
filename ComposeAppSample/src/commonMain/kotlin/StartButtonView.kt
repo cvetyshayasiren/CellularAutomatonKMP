@@ -14,15 +14,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import cellularAutomaton.CellularAutomaton
-import cellularAutomaton.CircularRunRandomBehaviour
+import cellularAutomaton.CellularAutomatonState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
-fun StartButtonView(ca: CellularAutomaton, height: Dp) {
-    val isRun = ca.isRun.collectAsState()
+fun StartButtonView(caState: CellularAutomatonState, height: Dp) {
+    val isRun = caState.isRun.collectAsState()
     val textColor = animateColorAsState(
         if(isRun.value) MaterialTheme.colorScheme.error else
             MaterialTheme.colorScheme.onBackground
@@ -52,13 +51,8 @@ fun StartButtonView(ca: CellularAutomaton, height: Dp) {
         onClick = {
             CoroutineScope(Dispatchers.IO).launch {
                 when(isRun.value) {
-                    true -> ca.stop()
-                    false -> ca.circularRun(
-                        CircularRunRandomBehaviour(
-                            width = ca.figure.value.width,
-                            height = ca.figure.value.height
-                        )
-                    )
+                    true -> caState.stop()
+                    false -> caState.run()
                 }
             }
         }

@@ -20,9 +20,10 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import cellularAutomaton.CellularAutomaton
+import cellularAutomaton.CellularAutomatonState
 
 @Composable
-fun HorizontalView(ca: CellularAutomaton, size: IntSize) {
+fun HorizontalView(caState: CellularAutomatonState, size: IntSize) {
     val scrollState = rememberScrollState()
     val height = animateDpAsState(
         when(scrollState.value) {
@@ -43,7 +44,7 @@ fun HorizontalView(ca: CellularAutomaton, size: IntSize) {
                 .shadow(10.dp, RoundedCornerShape(20.dp))
                 .clip(RoundedCornerShape(20.dp))
                 .background(MaterialTheme.colorScheme.surface)
-        ) { ca.Draw() }
+        ) { CellularAutomaton(caState, modifier = Modifier.size(400.dp)) }
         Column(
             Modifier
                 .padding(20.dp)
@@ -51,8 +52,8 @@ fun HorizontalView(ca: CellularAutomaton, size: IntSize) {
                 .clip(RoundedCornerShape(20.dp))
                 .background(MaterialTheme.colorScheme.surface)
         ) {
-            StartButtonView(ca, height.value)
-            Box(Modifier.verticalScroll(scrollState)) { ControlView(ca) }
+            StartButtonView(caState, height.value)
+            Box(Modifier.verticalScroll(scrollState)) { ControlView(caState) }
         }
     }
 }

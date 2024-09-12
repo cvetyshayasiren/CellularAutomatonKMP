@@ -9,25 +9,25 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import cellularAutomaton.CellularAutomato
-import cellularAutomaton.CellularAutomatoState
+import cellularAutomaton.CellularAutomaton
+import cellularAutomaton.CellularAutomatonState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
 fun NewCaTest() {
-    val caState = remember { CellularAutomatoState() }
+    val caState = remember { CellularAutomatonState() }
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxSize()
     ) {
-        CellularAutomato(caState, Modifier.size(400.dp))
+        CellularAutomaton(caState, Modifier.size(400.dp))
         TextButton(
             onClick = {
                 when(caState.isRun.value) {
-                    false -> CoroutineScope(Dispatchers.Default).launch { caState.simpleRun() }
+                    false -> CoroutineScope(Dispatchers.Default).launch { caState.run() }
                     true -> caState.stop()
                 }
             }

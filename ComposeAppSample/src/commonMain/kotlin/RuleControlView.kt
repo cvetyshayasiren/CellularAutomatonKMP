@@ -14,11 +14,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import cellularAutomaton.CellularAutomaton
+import cellularAutomaton.CellularAutomatonState
 
 @Composable
-fun RuleControlView(ca: CellularAutomaton) {
-    val rule = ca.rule.collectAsState()
+fun RuleControlView(caState: CellularAutomatonState) {
+    val rule = caState.rule.collectAsState()
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.Center,
@@ -41,7 +41,7 @@ fun RuleControlView(ca: CellularAutomaton) {
                     RadioButton(
                         modifier = Modifier.size(25.dp),
                         selected = selected, onClick = {
-                            ca.setRule(
+                            caState.setRule(
                                 rule.value.copy(
                                     born = if(selected) rule.value.born.minus(element) else
                                         rule.value.born.plus(element)
@@ -70,7 +70,7 @@ fun RuleControlView(ca: CellularAutomaton) {
                     RadioButton(
                         modifier = Modifier.size(25.dp),
                         selected = selected, onClick = {
-                            ca.setRule(
+                            caState.setRule(
                                 rule.value.copy(
                                     survive = if(selected) rule.value.survive.minus(element) else
                                         rule.value.survive.plus(element)
@@ -86,7 +86,7 @@ fun RuleControlView(ca: CellularAutomaton) {
         Slider(
             value = rule.value.aging.toFloat(),
             onValueChange = {
-                ca.setRule(rule.value.copy(aging = it.toInt()))
+                caState.setRule(rule.value.copy(aging = it.toInt()))
             },
             valueRange = (0f..100f)
         )

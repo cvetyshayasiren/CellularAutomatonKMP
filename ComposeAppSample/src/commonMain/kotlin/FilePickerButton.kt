@@ -9,12 +9,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import cellularAutomaton.CAFigureFromImageBitmap
-import cellularAutomaton.CellularAutomatonFigure
+import cellularAutomaton.CaFigure
 import cellularAutomaton.imageBitmapFromBytes
 import io.github.vinceglb.filekit.compose.rememberFilePickerLauncher
-import io.github.vinceglb.filekit.core.FileKit
-import io.github.vinceglb.filekit.core.PickerMode
 import io.github.vinceglb.filekit.core.PickerType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -23,7 +20,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun FilePickerButton(
     aging: Int = 0,
-    onPick: suspend(figure: CellularAutomatonFigure)-> Unit
+    onPick: suspend(figure: CaFigure)-> Unit
 ) {
     var imageText by remember { mutableStateOf("load image") }
 
@@ -32,7 +29,7 @@ fun FilePickerButton(
             file?.let { platformFile ->
                 println(platformFile.file.extension)
                 onPick(
-                    CAFigureFromImageBitmap(
+                    CaFigure.FromImageBitmap(
                         imageBitmap = imageBitmapFromBytes(platformFile.readBytes()),
                         aging = aging,
                         scale = .2f

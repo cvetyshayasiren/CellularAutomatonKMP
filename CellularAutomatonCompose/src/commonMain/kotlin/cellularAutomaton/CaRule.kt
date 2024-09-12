@@ -1,6 +1,6 @@
 package cellularAutomaton
 
-data class CellularAutomatonRule(
+data class CaRule(
     val born: Set<Int> = setOf(3),
     val survive: Set<Int> = setOf(2, 3),
     val aging: Int = 0
@@ -19,14 +19,14 @@ data class CellularAutomatonRule(
     }
 
     companion object {
-        fun fromString(string: String): CellularAutomatonRule {
+        fun fromString(string: String): CaRule {
             val born = "B(\\d*)S".toRegex().find(string)?.groupValues?.get(1)
             val survive = "S(\\d*)/".toRegex().find(string)?.groupValues?.get(1)
             val aging = "/(\\d*)$".toRegex().find(string)?.groupValues?.get(1)
             require(born != null && survive != null && aging != null) { "wrong string" }
             val b = born.split("").filterNot { it.isBlank() }.map { it.toInt() }.toSet()
             val s = survive.split("").filterNot { it.isBlank() }.map { it.toInt() }.toSet()
-            return CellularAutomatonRule(b, s, aging.toInt())
+            return CaRule(b, s, aging.toInt())
         }
     }
 }
