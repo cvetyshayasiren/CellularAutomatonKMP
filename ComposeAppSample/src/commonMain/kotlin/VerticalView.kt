@@ -18,6 +18,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,6 +43,7 @@ fun VerticalView(caState: CellularAutomatonState, size: IntSize) {
     val drawHeight = animateFloatAsState(
         if(scaffoldState.bottomSheetState.hasExpandedState) .9f else .5f
     )
+
     BottomSheetScaffold(
         sheetShape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
         scaffoldState = scaffoldState,
@@ -68,12 +70,12 @@ fun VerticalView(caState: CellularAutomatonState, size: IntSize) {
             }
         }
     ) {
-        Box(
-            Modifier
+        CellularAutomaton(
+            state = caState,
+            modifier = Modifier
                 .fillMaxHeight(drawHeight.value)
-                .padding(20.dp)
-                .shadow(10.dp, RoundedCornerShape(20.dp))
-                .clip(RoundedCornerShape(20.dp))
-        ) { CellularAutomaton(caState, modifier = Modifier.size(400.dp)) }
+                .fillMaxWidth()
+                .then(caModifier())
+        )
     }
 }

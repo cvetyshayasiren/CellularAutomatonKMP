@@ -34,9 +34,9 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun ControlView(caState: CellularAutomatonState) {
-    var backgroundColor by remember { mutableStateOf(Color.White) }
-    var padding by remember { mutableStateOf(0.dp) }
-    var shape by remember { mutableStateOf(0.dp) }
+    val background = ModifierProperties.background.collectAsState()
+    val padding = ModifierProperties.padding.collectAsState()
+    val shapeCorner = ModifierProperties.shapeCorner.collectAsState()
     val cellState = caState.cellState.collectAsState()
     val fieldState = caState.fieldState.collectAsState()
     val runProperties = caState.runProperties.collectAsState()
@@ -116,8 +116,8 @@ fun ControlView(caState: CellularAutomatonState) {
         ) {
             Spacer(Modifier.size(5.dp))
             Text("Цвета")
-            RgbPicker(backgroundColor) {
-                backgroundColor = it
+            RgbPicker(background.value) {
+                ModifierProperties.setBackground(it)
             }
             RgbPicker(cellState.value.color) {
                 caState.setCellParams(color = it)
@@ -203,12 +203,12 @@ fun ControlView(caState: CellularAutomatonState) {
                 onCheckedChange = { caState.setFieldParams(isZoomable = it) }
             )
         }
-        Text("Граница $padding", Modifier.fillMaxWidth())
+        Text("Граница ${padding.value.value.toInt()}", Modifier.fillMaxWidth())
         Slider(
-            value = padding.value,
+            value = padding.value.value,
             onValueChange = {
                 CoroutineScope(Dispatchers.Default).launch {
-                    padding = it.dp
+                    ModifierProperties.setPadding(it.dp)
                 }
             },
             valueRange = (0f..100f)
@@ -216,10 +216,10 @@ fun ControlView(caState: CellularAutomatonState) {
         Text("Скругление", Modifier.fillMaxWidth())
 
         Slider(
-            value = shape.value,
+            value = shapeCorner.value.value,
             onValueChange = {
                 CoroutineScope(Dispatchers.Default).launch {
-                    shape = it.dp
+                    ModifierProperties.setShapeCorner(it.dp)
                 }
             },
             valueRange = (0f..500f)
@@ -227,7 +227,9 @@ fun ControlView(caState: CellularAutomatonState) {
         TextButton(
             onClick = {
                 CoroutineScope(Dispatchers.IO).launch {
-                    backgroundColor = randomColor()
+                    ModifierProperties.setBackground(randomColor())
+                    ModifierProperties.setPadding((0..100).random().dp)
+                    ModifierProperties.setShapeCorner((0..500).random().dp)
                     caState.setCellParams(
                         color = randomColor(),
                         agedColor = randomColor(),

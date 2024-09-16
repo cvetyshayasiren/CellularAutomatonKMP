@@ -1,5 +1,8 @@
 package cellularAutomaton
 
+import androidx.compose.runtime.Stable
+
+@Stable
 data class CaRule(
     val born: Set<Int> = setOf(3),
     val survive: Set<Int> = setOf(2, 3),

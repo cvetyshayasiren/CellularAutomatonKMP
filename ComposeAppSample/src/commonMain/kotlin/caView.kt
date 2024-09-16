@@ -13,9 +13,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.IntSize
 import cellularAutomaton.CaCellState
+import cellularAutomaton.CaCycles
 import cellularAutomaton.CaFieldState
 import cellularAutomaton.CaFigure
 import cellularAutomaton.CaRule
+import cellularAutomaton.CaRunBehaviour
 import cellularAutomaton.CaRunProperties
 import cellularAutomaton.CellularAutomatonState
 
@@ -36,7 +38,8 @@ fun CaView(
             isZoomable = true
         ),
         runProperties = CaRunProperties(
-            delay = 100L
+            delay = 100L,
+            behaviour = CaRunBehaviour.RandomFigure(CaCycles.Infinite, 50, 50)
         )
     )
 ) {

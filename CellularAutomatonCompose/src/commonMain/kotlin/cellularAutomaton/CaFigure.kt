@@ -1,5 +1,6 @@
 package cellularAutomaton
 
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.IntSize
@@ -9,6 +10,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
+@Stable
 interface CaFigure {
     val generation: CAGeneration
     val height: Int
@@ -16,6 +18,7 @@ interface CaFigure {
     val width: Int
         get() = generation.cellsState.value[0].size
 
+    @Stable
     fun nextStep(rule: CaRule = CaRule()) {
         val cells = generation.cellsState.value
         val newGeneration = MutableList(cells.size) { MutableList(cells[0].size) { 0 } }

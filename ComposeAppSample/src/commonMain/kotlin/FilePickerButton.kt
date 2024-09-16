@@ -27,7 +27,6 @@ fun FilePickerButton(
     val launcher = rememberFilePickerLauncher(type = PickerType.Image) { file ->
         CoroutineScope(Dispatchers.IO).launch {
             file?.let { platformFile ->
-                println(platformFile.file.extension)
                 onPick(
                     CaFigure.FromImageBitmap(
                         imageBitmap = imageBitmapFromBytes(platformFile.readBytes()),

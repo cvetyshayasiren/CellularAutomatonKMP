@@ -1,6 +1,7 @@
 package cellularAutomaton
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import kotlinx.coroutines.delay
@@ -11,6 +12,7 @@ import kotlinx.coroutines.flow.StateFlow
 fun rememberCellularAutomatonState(): CellularAutomatonState {
     return remember { CellularAutomatonState() }
 }
+@Stable
 data class CaCellState(
     val color: Color = Color(96, 108, 56),
     val agedColor: Color = Color(221, 161, 94),
@@ -18,17 +20,20 @@ data class CaCellState(
     val marginsRatio: Float = .9f,
 )
 
+@Stable
 data class CaFieldState(
     val isDrawGrid: Boolean = false,
     val isDrawable: Boolean = false,
     val isZoomable: Boolean = false
 )
 
+@Stable
 data class CaRunProperties(
     val delay: Long = 100,
     val behaviour: CaRunBehaviour = CaRunBehaviour.Simple
 )
 
+@Stable
 class CellularAutomatonState(
     figure: CaFigure = CaFigure
         .FromRandom(20, 20, .5f),

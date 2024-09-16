@@ -12,10 +12,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
@@ -32,19 +34,18 @@ fun HorizontalView(caState: CellularAutomatonState, size: IntSize) {
             else -> with(LocalDensity.current) { (size.height/8).toDp() }
         }
     )
+
     Row(
         modifier = Modifier.fillMaxSize(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
-        Box(
-            Modifier
+        CellularAutomaton(
+            state = caState,
+            modifier = Modifier
                 .size(with(LocalDensity.current) { (size.width/2).toDp() })
-                .padding(20.dp)
-                .shadow(10.dp, RoundedCornerShape(20.dp))
-                .clip(RoundedCornerShape(20.dp))
-                .background(MaterialTheme.colorScheme.surface)
-        ) { CellularAutomaton(caState, modifier = Modifier.size(400.dp)) }
+                .then(caModifier())
+        )
         Column(
             Modifier
                 .padding(20.dp)

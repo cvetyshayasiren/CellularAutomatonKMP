@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -27,12 +28,12 @@ fun StartButtonView(caState: CellularAutomatonState, height: Dp) {
             MaterialTheme.colorScheme.onBackground
     )
     val colorFrom = animateColorAsState(
-        if(isRun.value) MaterialTheme.colorScheme.error.copy(alpha = .5f) else
-            MaterialTheme.colorScheme.primary.copy(alpha = .5f)
+        if(isRun.value) MaterialTheme.colorScheme.error.copy(alpha = .8f) else
+            MaterialTheme.colorScheme.primary.copy(alpha = .8f)
     )
     val colorTo = animateColorAsState(
-        if(isRun.value) MaterialTheme.colorScheme.onError.copy(alpha = .5f) else
-            MaterialTheme.colorScheme.secondary.copy(alpha = .5f)
+        if(isRun.value) MaterialTheme.colorScheme.onError.copy(alpha = .8f) else
+            MaterialTheme.colorScheme.secondary.copy(alpha = .8f)
     )
 
     TextButton(
