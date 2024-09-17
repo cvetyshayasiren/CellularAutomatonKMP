@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.ButtonDefaults
@@ -27,20 +28,32 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import theme.defaultPadding
+import theme.defaultShape
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RgbPicker(tint: Color, onClick: (color: Color) -> Unit) {
+fun RgbPicker(
+    label: String,
+    tint: Color,
+    onClick: (color: Color) -> Unit
+) {
     var alert by remember { mutableStateOf(false) }
 
-    IconButton(
-        onClick = { alert = true }
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
     ) {
-        Icon(
-            imageVector = Icons.Default.Refresh,
-            contentDescription = "",
-            tint = tint
-        )
+        Text(text = label, fontSize = MaterialTheme.typography.labelMedium.fontSize)
+        IconButton(
+            onClick = { alert = true }
+        ) {
+            Icon(
+                imageVector = Icons.Default.Edit,
+                contentDescription = "",
+                tint = tint
+            )
+        }
     }
 
     if(alert) {
@@ -49,9 +62,9 @@ fun RgbPicker(tint: Color, onClick: (color: Color) -> Unit) {
             content = {
                 Column(
                     modifier = Modifier
-                        .clip(RoundedCornerShape(20.dp))
+                        .clip(defaultShape)
                         .background(tint.copy(alpha = .9f))
-                        .padding(20.dp),
+                        .padding(defaultPadding * 2),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -111,7 +124,7 @@ fun RgbPicker(tint: Color, onClick: (color: Color) -> Unit) {
                                 contentColor = tint
                             )
                         ) {
-                            Text("Закрыть")
+                            Text("Close")
                         }
                     }
                 }

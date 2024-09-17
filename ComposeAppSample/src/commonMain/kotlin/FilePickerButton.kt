@@ -16,6 +16,7 @@ import io.github.vinceglb.filekit.core.PickerType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import theme.defaultShape
 
 @Composable
 fun FilePickerButton(
@@ -41,7 +42,7 @@ fun FilePickerButton(
 
     Button(
         modifier = Modifier.fillMaxWidth(.8f),
-        shape = RoundedCornerShape(8.dp),
+        shape = defaultShape,
         onClick = { launcher.launch() }
     ) {
         Text(imageText)

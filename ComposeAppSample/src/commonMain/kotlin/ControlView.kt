@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
@@ -31,6 +33,13 @@ import cellularAutomaton.CellularAutomatonState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import theme.BigSpacer
+import theme.ControlCheckbox
+import theme.ControlSection
+import theme.ControlSlider
+import theme.SmallSpacer
+import theme.defaultPadding
+import theme.defaultShape
 
 @Composable
 fun ControlView(caState: CellularAutomatonState) {
@@ -43,187 +52,134 @@ fun ControlView(caState: CellularAutomatonState) {
     val figure = caState.figure.collectAsState()
     val rule = caState.rule.collectAsState()
     Column(
-        Modifier.fillMaxSize().padding(10.dp),
+        Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(Modifier.size(40.dp))
 
-        Text("Фигура", fontWeight = FontWeight.Bold)
-        Spacer(Modifier.size(20.dp))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            TextButton(
-                onClick = {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        caState.setFigure(
-                            CaFigure.FromRandom(
-                                width = (20..100).random(),
-                                height = (20..100).random()
-                            )
-                        )
-                    }
-                }
+        ControlSection(label = "Figure") {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text("Случайный размер")
+                TextButton(
+                    onClick = {
+                        CoroutineScope(Dispatchers.IO).launch {
+                            caState.setFigure(
+                                CaFigure.FromRandom(
+                                    width = (20..100).random(),
+                                    height = (20..100).random()
+                                )
+                            )
+                        }
+                    }
+                ) {
+                    Text("Random size")
+                }
+                IconButton(onClick = { caState.nextStep() }) {
+                    Text("\uD83E\uDDB6")
+                }
+                IconButton(onClick = { figure.value.randomiseState() }) {
+                    Text("\uD83C\uDFB2")
+                }
+                IconButton(onClick = { figure.value.clearState() }) {
+                    Text("\uD83D\uDDD1")
+                }
             }
-            IconButton(onClick = { caState.nextStep() }) {
-                Text("\uD83E\uDDB6")
-            }
-            IconButton(onClick = { figure.value.randomiseState() }) {
-                Text("\uD83C\uDFB2")
-            }
-            IconButton(onClick = { figure.value.clearState() }) {
-                Text("\uD83D\uDDD1")
-            }
+
+            ControlSlider(
+                text = "Width ${figure.value.width}",
+                value = figure.value.width.toFloat(),
+                valueRange = (10f..200f)
+            ) { caState.setSize(width = it.toInt()) }
+
+            ControlSlider(
+                text = "Height ${figure.value.height}",
+                value = figure.value.height.toFloat(),
+                valueRange = (10f..200f)
+            ) { caState.setSize(height = it.toInt()) }
+
+            FilePickerButton(rule.value.aging) { caState.setFigure(it) }
         }
-        Text("Ширина ${figure.value.width}", Modifier.fillMaxWidth())
-        Slider(
-            value = figure.value.width.toFloat(),
-            onValueChange = {
-                CoroutineScope(Dispatchers.Default).launch { caState.setSize(width = it.toInt()) }
-            },
-            valueRange = (10f..200f)
-        )
-        Text("Высота ${figure.value.height}", Modifier.fillMaxWidth())
-        Slider(
-            value = figure.value.height.toFloat(),
-            onValueChange = {
-                CoroutineScope(Dispatchers.Default).launch { caState.setSize(height = it.toInt()) }
-            },
-            valueRange = (10f..200f)
-        )
-        FilePickerButton(rule.value.aging) { caState.setFigure(it) }
-        Spacer(Modifier.size(40.dp))
 
-        Text("Правило", fontWeight = FontWeight.Bold)
-        Spacer(Modifier.size(20.dp))
-        RuleControlView(caState)
-        Spacer(Modifier.size(40.dp))
+        ControlSection(label = "Rule") {
+            RuleControlView(caState)
+        }
 
-        Text("Прочее", fontWeight = FontWeight.Bold)
-        Spacer(Modifier.size(20.dp))
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(20.dp))
-                .background(MaterialTheme.colorScheme.onBackground.copy(alpha = .1f)),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Spacer(Modifier.size(5.dp))
-            Text("Цвета")
-            RgbPicker(background.value) {
+        ControlSection(label = "Cells") {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                RgbPicker(label = "cell color", tint = cellState.value.color) {
+                    caState.setCellParams(color = it)
+                }
+                RgbPicker(label = "aged cell color", tint = cellState.value.agedColor) {
+                    caState.setCellParams(agedColor = it)
+                }
+            }
+            ControlSlider(
+                text = "Corner radius ${(cellState.value.cornerRadius * 100).toInt()/100f}",
+                value = cellState.value.cornerRadius,
+                valueRange = (0f..1f)
+            ) { caState.setCellParams(cornerRadius = it) }
+            ControlSlider(
+                text = "Margins ratio ${(cellState.value.marginsRatio * 100).toInt() / 100f}",
+                value = cellState.value.marginsRatio,
+                valueRange = (0f..2f)
+            ) { caState.setCellParams(marginsRatio = it) }
+        }
+
+        ControlSection(label = "Field") {
+            RgbPicker(label = "backgroundColor", tint = background.value) {
                 ModifierProperties.setBackground(it)
             }
-            RgbPicker(cellState.value.color) {
-                caState.setCellParams(color = it)
-            }
-            RgbPicker(cellState.value.agedColor) {
-                caState.setCellParams(agedColor = it)
-            }
-        }
-        Spacer(Modifier.size(20.dp))
-        Text("Задержка ${runProperties.value.delay}ms", Modifier.fillMaxWidth())
-        Slider(
-            value = runProperties.value.delay.toFloat(),
-            onValueChange = {
-                CoroutineScope(Dispatchers.Default).launch {
-                    caState.setRunProperties(delay = it.toLong())
-                }
-            },
-            valueRange = (0f..1000f)
-        )
-        Text(
-            text = "Углы ${(cellState.value.cornerRadius * 100).toInt()/100f}",
-            modifier = Modifier.fillMaxWidth()
-        )
-        Slider(
-            value = cellState.value.cornerRadius,
-            onValueChange = {
-                CoroutineScope(Dispatchers.Default).launch {
-                    caState.setCellParams(cornerRadius = it)
-                }
-            },
-            valueRange = (0f..1f)
-        )
-
-        TextButton(
-            modifier = Modifier.fillMaxWidth(),
-            onClick = {
-                caState.setFieldParams(isDrawGrid = !fieldState.value.isDrawGrid)
-            }
-        ) {
-            Text("Сетка")
-            Spacer(Modifier.weight(1f))
-            Checkbox(
+            ControlCheckbox(
+                label = "Draw grid",
                 checked = fieldState.value.isDrawGrid,
-                onCheckedChange = { caState.setFieldParams(isDrawGrid = it) }
+                onClick = {
+                    caState.setFieldParams(isDrawGrid = !fieldState.value.isDrawGrid)
+                },
+                onCheckedChange =  { caState.setFieldParams(isDrawGrid = it) }
             )
-        }
-        Text(
-            text = "Отступы ${(cellState.value.marginsRatio * 100).toInt() / 100f}",
-            modifier = Modifier.fillMaxWidth()
-        )
-        Slider(
-            value = cellState.value.marginsRatio,
-            onValueChange = {
-                CoroutineScope(Dispatchers.Default).launch {
-                    caState.setCellParams(marginsRatio = it)
-                }
-            },
-            valueRange = (0f..2f)
-        )
-        TextButton(
-            modifier = Modifier.fillMaxWidth(),
-            onClick = {
-                caState.setFieldParams(isDrawable = !fieldState.value.isDrawable)
-            }
-        ) {
-            Text("Рисовать")
-            Spacer(Modifier.weight(1f))
-            Checkbox(
+            ControlCheckbox(
+                label = "Drawable",
                 checked = fieldState.value.isDrawable,
+                onClick = {
+                    caState.setFieldParams(isDrawable = !fieldState.value.isDrawable)
+                },
                 onCheckedChange = { caState.setFieldParams(isDrawable = it) }
             )
-        }
-        TextButton(
-            modifier = Modifier.fillMaxWidth(),
-            onClick = {
-                caState.setFieldParams(isZoomable = !fieldState.value.isZoomable)
-            }
-        ) {
-            Text("Жесты")
-            Spacer(Modifier.weight(1f))
-            Checkbox(
+            ControlCheckbox(
+                label = "Zoomable",
                 checked = fieldState.value.isZoomable,
+                onClick = {
+                    caState.setFieldParams(isZoomable = !fieldState.value.isZoomable)
+                },
                 onCheckedChange = { caState.setFieldParams(isZoomable = it) }
             )
+            ControlSlider(
+                text = "Padding ${padding.value.value.toInt()}",
+                value = padding.value.value,
+                valueRange = (0f..100f)
+            ) { ModifierProperties.setPadding(it.dp) }
+            ControlSlider(
+                text = "Shape",
+                value = shapeCorner.value.value,
+                valueRange = (0f..500f)
+            ) { ModifierProperties.setShapeCorner(it.dp) }
         }
-        Text("Граница ${padding.value.value.toInt()}", Modifier.fillMaxWidth())
-        Slider(
-            value = padding.value.value,
-            onValueChange = {
-                CoroutineScope(Dispatchers.Default).launch {
-                    ModifierProperties.setPadding(it.dp)
-                }
-            },
-            valueRange = (0f..100f)
-        )
-        Text("Скругление", Modifier.fillMaxWidth())
 
-        Slider(
-            value = shapeCorner.value.value,
-            onValueChange = {
-                CoroutineScope(Dispatchers.Default).launch {
-                    ModifierProperties.setShapeCorner(it.dp)
-                }
-            },
-            valueRange = (0f..500f)
-        )
+        ControlSection(label = "Run properties") {
+            ControlSlider(
+                text = "Delay ${runProperties.value.delay}ms",
+                value = runProperties.value.delay.toFloat(),
+                valueRange = (0f..1000f)
+            ) { caState.setRunProperties(delay = it.toLong()) }
+        }
+
         TextButton(
             onClick = {
                 CoroutineScope(Dispatchers.IO).launch {
@@ -242,7 +198,7 @@ fun ControlView(caState: CellularAutomatonState) {
                 }
             }
         ) {
-            Text("СУПЕРРАНДОМ")
+            Text("Super random")
         }
     }
 }

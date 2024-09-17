@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import cellularAutomaton.CellularAutomatonState
+import theme.defaultPadding
 
 @Composable
 fun RuleControlView(caState: CellularAutomatonState) {
@@ -39,7 +40,7 @@ fun RuleControlView(caState: CellularAutomatonState) {
                 ) {
                     Text(element.toString())
                     RadioButton(
-                        modifier = Modifier.size(25.dp),
+                        modifier = Modifier.size(defaultPadding * 3),
                         selected = selected, onClick = {
                             caState.setRule(
                                 rule.value.copy(
@@ -52,7 +53,7 @@ fun RuleControlView(caState: CellularAutomatonState) {
                 }
             }
         }
-        Spacer(Modifier.size(20.dp))
+        Spacer(Modifier.size(defaultPadding * 2))
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
@@ -68,7 +69,7 @@ fun RuleControlView(caState: CellularAutomatonState) {
                 ) {
                     Text(element.toString())
                     RadioButton(
-                        modifier = Modifier.size(25.dp),
+                        modifier = Modifier.size(defaultPadding * 3),
                         selected = selected, onClick = {
                             caState.setRule(
                                 rule.value.copy(
@@ -81,7 +82,7 @@ fun RuleControlView(caState: CellularAutomatonState) {
                 }
             }
         }
-        Spacer(Modifier.size(20.dp))
+        Spacer(Modifier.size(defaultPadding * 2))
         Text("aging ${rule.value.aging}", Modifier.fillMaxWidth())
         Slider(
             value = rule.value.aging.toFloat(),
