@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
@@ -27,7 +28,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 val defaultPadding = 8.dp
-val defaultShape = RoundedCornerShape(12.dp)
+val defaultShapeCorner = 12.dp
+val defaultShape = RoundedCornerShape(defaultShapeCorner)
 val defaultShadow = 4.dp
 
 @Composable
@@ -51,9 +53,8 @@ fun ControlSlider(
         modifier = Modifier
             .padding(vertical = defaultPadding)
             .fillMaxWidth()
-            .clip(defaultShape)
             .background(MaterialTheme.colorScheme.onBackground.copy(alpha = .05f))
-            .padding(defaultPadding),
+            .padding(defaultPadding / 2),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -96,12 +97,7 @@ fun ControlCheckbox(
 fun ControlSection(label: String, content: @Composable() (ColumnScope.() -> Unit)) {
     Column(
         modifier = Modifier
-            .fillMaxWidth()
-            .border(
-                width = 1.dp,
-                color = MaterialTheme.colorScheme.primary,
-                shape = defaultShape
-            ),
+            .fillMaxWidth(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -110,5 +106,6 @@ fun ControlSection(label: String, content: @Composable() (ColumnScope.() -> Unit
         SmallSpacer()
         content()
         SmallSpacer()
+        HorizontalDivider()
     }
 }

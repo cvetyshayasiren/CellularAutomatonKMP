@@ -133,7 +133,7 @@ fun ControlView(caState: CellularAutomatonState) {
         }
 
         ControlSection(label = "Field") {
-            RgbPicker(label = "backgroundColor", tint = background.value) {
+            RgbPicker(label = "background color", tint = background.value) {
                 ModifierProperties.setBackground(it)
             }
             ControlCheckbox(

@@ -10,7 +10,7 @@ fun App() {
     CellularAutomatonTheme {
         Surface {
             ModifierProperties
-                .setBackground(MaterialTheme.colorScheme.surface)
+                .setBackground(MaterialTheme.colorScheme.surfaceVariant)
             CaView()
         }
     }

@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import cellularAutomaton.CellularAutomatonState
+import theme.ControlSlider
 import theme.defaultPadding
 
 @Composable
@@ -83,12 +84,10 @@ fun RuleControlView(caState: CellularAutomatonState) {
             }
         }
         Spacer(Modifier.size(defaultPadding * 2))
-        Text("aging ${rule.value.aging}", Modifier.fillMaxWidth())
-        Slider(
+        ControlSlider(
+            text = "aging ${rule.value.aging}",
             value = rule.value.aging.toFloat(),
-            onValueChange = {
-                caState.setRule(rule.value.copy(aging = it.toInt()))
-            },
+            onValueChange = { caState.setRule(rule.value.copy(aging = it.toInt())) },
             valueRange = (0f..100f)
         )
     }
