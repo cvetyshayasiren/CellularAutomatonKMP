@@ -1,27 +1,41 @@
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import cellularAutomaton.CaFigure
 import cellularAutomaton.CellularAutomatonState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import theme.defaultPadding
+import theme.defaultShape
+import kotlin.random.Random
 
 @Composable
 fun StartButtonView(caState: CellularAutomatonState, height: Dp) {
+    val figure = caState.figure.collectAsState()
     val isRun = caState.isRun.collectAsState()
     val textColor = animateColorAsState(
         if(isRun.value) MaterialTheme.colorScheme.error else
@@ -36,8 +50,7 @@ fun StartButtonView(caState: CellularAutomatonState, height: Dp) {
             MaterialTheme.colorScheme.secondary.copy(alpha = .8f)
     )
 
-    TextButton(
-        shape = RoundedCornerShape(0.dp),
+    Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(height)
@@ -49,20 +62,39 @@ fun StartButtonView(caState: CellularAutomatonState, height: Dp) {
                     )
                 )
             ),
-        onClick = {
-            CoroutineScope(Dispatchers.IO).launch {
-                when(isRun.value) {
-                    true -> caState.stop()
-                    false -> caState.run()
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Start
+    ) {
+        TextButton(
+            modifier = Modifier
+                .fillMaxWidth(.5f)
+                .fillMaxHeight(),
+            shape =  RectangleShape,
+            onClick = {
+                CoroutineScope(Dispatchers.IO).launch {
+                    when(isRun.value) {
+                        true -> caState.stop()
+                        false -> caState.run()
+                    }
                 }
             }
+        ) {
+            Text(
+                text = if(isRun.value) "🛑" else "▶\uFE0F",
+                fontWeight = FontWeight.Bold,
+                fontSize = (height/3).value.sp,
+                color = textColor.value
+            )
         }
-    ) {
-        Text(
-            text = if(isRun.value) "🛑" else "▶\uFE0F",
-            fontWeight = FontWeight.Bold,
-            fontSize = (height/3).value.sp,
-            color = textColor.value
-        )
+
+        IconButton(onClick = { caState.nextStep() }) {
+            Text("\uD83E\uDDB6")
+        }
+        IconButton(onClick = { figure.value.randomiseState() }) {
+            Text("\uD83C\uDFB2")
+        }
+        IconButton(onClick = { figure.value.clearState() }) {
+            Text("\uD83D\uDDD1")
+        }
     }
 }

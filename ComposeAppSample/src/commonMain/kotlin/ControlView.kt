@@ -56,7 +56,6 @@ fun ControlView(caState: CellularAutomatonState) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
         ControlSection(label = "Figure") {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -76,15 +75,6 @@ fun ControlView(caState: CellularAutomatonState) {
                     }
                 ) {
                     Text("Random size")
-                }
-                IconButton(onClick = { caState.nextStep() }) {
-                    Text("\uD83E\uDDB6")
-                }
-                IconButton(onClick = { figure.value.randomiseState() }) {
-                    Text("\uD83C\uDFB2")
-                }
-                IconButton(onClick = { figure.value.clearState() }) {
-                    Text("\uD83D\uDDD1")
                 }
             }
 

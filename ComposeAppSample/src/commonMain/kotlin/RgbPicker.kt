@@ -34,8 +34,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.RoundRect
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import theme.defaultPadding
@@ -63,7 +68,6 @@ fun RgbPicker(
             .border(width = 2.dp, color = tint, shape = defaultShape)
             .size(120.dp, 48.dp)
             .clickable { alert = true }
-
     ) {
         Text(
             modifier = Modifier

@@ -82,7 +82,7 @@ interface CaFigure {
         return List(height) { List(width) { cells.next() } }
     }
 
-    fun randomiseState(fillingRatio: Float? = .5f) {
+    fun randomiseState(fillingRatio: Float? = null) {
         generation.setCellsState(getRandomCellsState(fillingRatio))
     }
 

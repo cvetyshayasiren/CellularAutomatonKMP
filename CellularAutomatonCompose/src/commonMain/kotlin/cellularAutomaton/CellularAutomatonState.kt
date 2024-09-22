@@ -81,8 +81,8 @@ class CellularAutomatonState(
         stop()
         setFigure(
             CaFigure.FromRandom(
-                width = width ?: figure.value.width,
-                height = height ?: figure.value.height
+                width = width ?: _figure.value.width,
+                height = height ?: _figure.value.height
             )
         )
     }
