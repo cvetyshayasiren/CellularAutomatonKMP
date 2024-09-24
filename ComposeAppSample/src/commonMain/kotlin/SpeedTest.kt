@@ -71,3 +71,5 @@ fun SpeedTest(
         Text(text = "Время: $time ms.")
     }
 }
+
+//24.09 11:30 4005 3526 3527
