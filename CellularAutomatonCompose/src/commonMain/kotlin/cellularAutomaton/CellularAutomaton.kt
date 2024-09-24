@@ -37,11 +37,7 @@ fun CellularAutomaton(
     var width by remember { mutableStateOf(1.dp) }
     var height by remember { mutableStateOf(1.dp) }
     var basedOnWidth by remember { mutableStateOf(true) }
-    val cell = state.cellState.collectAsState()
-    val field = state.fieldState.collectAsState()
     val figure = state.figure.collectAsState()
-    val transitionColors = state.transitionColors.collectAsState()
-    val generation = figure.value.generation.cellsState.collectAsState()
 
     Box(
         modifier = modifier
@@ -65,11 +61,7 @@ fun CellularAutomaton(
         _DrawCanvas(
             basedOnWidth,
             sizeModifier,
-            figure.value,
-            transitionColors.value,
-            cell.value,
-            field.value,
-            generation.value
+            state
         )
     }
 }
@@ -77,12 +69,14 @@ fun CellularAutomaton(
 private fun _DrawCanvas(
     basedOnWidth: Boolean,
     sizeModifier: Modifier,
-    figure: CaFigure,
-    transitionColors: List<Color>,
-    cells: CaCellState,
-    field: CaFieldState,
-    generation: List<List<Int>>
+    state: CellularAutomatonState
 ) {
+    val cells = state.cellState.collectAsState()
+    val field = state.fieldState.collectAsState()
+    val figure = state.figure.collectAsState()
+    val transitionColors = state.transitionColors.collectAsState()
+    val generation = state.figure.value.generation.cellsState.collectAsState()
+
     var zoom by remember { mutableStateOf(1f) }
     var offsetX by remember { mutableStateOf(0f) }
     var offsetY by remember { mutableStateOf(0f) }
@@ -91,7 +85,7 @@ private fun _DrawCanvas(
         modifier = Modifier
             .then(sizeModifier)
             .clipToBounds()
-            .then(if (field.isZoomable || field.isDrawable) Modifier
+            .then(if (field.value.isZoomable || field.value.isDrawable) Modifier
                 .graphicsLayer(
                     scaleX = zoom, scaleY = zoom,
                     translationX = -offsetX * zoom, translationY = -offsetY * zoom,
@@ -100,9 +94,9 @@ private fun _DrawCanvas(
                 .pointerInput(Unit) {
                     detectTransformGestures(
                         onGesture = { centroid, pan, gestureZoom, _ ->
-                            if (field.isZoomable) {
+                            if (field.value.isZoomable) {
                                 val oldZoom = zoom
-                                val maxZoom = figure.width / 10f
+                                val maxZoom = figure.value.width / 10f
                                 zoom = (zoom * gestureZoom).coerceIn(1f, maxZoom)
                                 offsetX =
                                     (offsetX + centroid.x / oldZoom) - (centroid.x / zoom + pan.x / oldZoom * zoom)
@@ -111,14 +105,14 @@ private fun _DrawCanvas(
                                 offsetX = offsetX.coerceIn(0f, size.width - size.width / zoom)
                                 offsetY = offsetY.coerceIn(0f, size.height - size.height / zoom)
                             }
-                            if (zoom == 1f && field.isDrawable) {
-                                val cellWidth = size.width.toFloat() / figure.width
+                            if (zoom == 1f && field.value.isDrawable) {
+                                val cellWidth = size.width.toFloat() / figure.value.width
                                 val x = (centroid.x / cellWidth).toInt()
                                 val y = (centroid.y / cellWidth).toInt()
-                                if (x in 0 until figure.width
-                                    && y in 0 until figure.height
+                                if (x in 0 until figure.value.width
+                                    && y in 0 until figure.value.height
                                 ) {
-                                    figure.addFigure(
+                                    figure.value.addFigure(
                                         x = x,
                                         y = y,
                                         figure = CaFigure.FromGeneration(
@@ -133,9 +127,9 @@ private fun _DrawCanvas(
                 .pointerInput(Unit) {
                     detectTapGestures(
                         onTap = { tapOffset ->
-                            if (field.isDrawable) {
-                                val cellWidth = size.width.toFloat() / figure.width
-                                figure.switchCell(
+                            if (field.value.isDrawable) {
+                                val cellWidth = size.width.toFloat() / figure.value.width
+                                figure.value.switchCell(
                                     x = (tapOffset.x / cellWidth).toInt(),
                                     y = (tapOffset.y / cellWidth).toInt()
                                 )
@@ -143,8 +137,8 @@ private fun _DrawCanvas(
                         }, onDoubleTap = { tapOffset ->
                             when (zoom) {
                                 1f -> {
-                                    if (field.isZoomable) {
-                                        val maxZoom = figure.width / 10f
+                                    if (field.value.isZoomable) {
+                                        val maxZoom = figure.value.width / 10f
                                         zoom = maxZoom / 2
                                         offsetX = (tapOffset.x * zoom).coerceIn(
                                             0f,
@@ -165,18 +159,18 @@ private fun _DrawCanvas(
                 }
             else Modifier)
     ) {
-        val cellSizeOnCanvas = if(basedOnWidth) size.width / figure.width else
-            size.height / figure.height
-        val cornerRadiusOnCanvas = cellSizeOnCanvas * cells.cornerRadius * .4f
-        val margins = cellSizeOnCanvas - cellSizeOnCanvas * cells.marginsRatio
+        val cellSizeOnCanvas = if(basedOnWidth) size.width / figure.value.width else
+            size.height / figure.value.height
+        val cornerRadiusOnCanvas = cellSizeOnCanvas * cells.value.cornerRadius * .4f
+        val margins = cellSizeOnCanvas - cellSizeOnCanvas * cells.value.marginsRatio
         val halfMargins = margins / 2
 
-        generation.forEachIndexed { i, line ->
+        generation.value.forEachIndexed { i, line ->
             line.forEachIndexed { j, cell ->
                 if (cell > 0) {
                     drawRoundRect(
-                        color = transitionColors
-                            .getOrElse(cell - 1) { cells.color },
+                        color = transitionColors.value
+                            .getOrElse(cell - 1) { cells.value.color },
                         topLeft = Offset(
                             x = j * cellSizeOnCanvas + halfMargins,
                             y = i * cellSizeOnCanvas + halfMargins
@@ -190,19 +184,19 @@ private fun _DrawCanvas(
                 }
             }
         }
-        if (field.isDrawGrid) {
-            repeat(figure.width + 1) {
+        if (field.value.isDrawGrid) {
+            repeat(figure.value.width + 1) {
                 val x = cellSizeOnCanvas * it
                 drawLine(
-                    color = cells.color,
+                    color = cells.value.color,
                     start = Offset(x, 0f),
                     end = Offset(x, size.height)
                 )
             }
-            repeat(figure.height + 1) {
+            repeat(figure.value.height + 1) {
                 val y = cellSizeOnCanvas * it
                 drawLine(
-                    color = cells.color,
+                    color = cells.value.color,
                     start = Offset(0f, y),
                     end = Offset(size.width, y)
                 )
