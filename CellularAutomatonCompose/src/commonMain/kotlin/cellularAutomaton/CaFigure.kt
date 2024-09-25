@@ -130,7 +130,8 @@ interface CaFigure {
                 size.collect {
                     width = it.width/cellSize
                     height = it.height/cellSize
-                    generation.setCellsState(getRandomCellsState(fillingRatio))
+                    generation?.let { gen -> gen.setCellsState(getRandomCellsState(fillingRatio)) }
+//                    generation.setCellsState(getRandomCellsState(fillingRatio))
                 }
             }
         }

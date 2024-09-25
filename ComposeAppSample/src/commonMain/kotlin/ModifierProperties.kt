@@ -9,7 +9,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import cellularAutomaton.CaFigure
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -39,6 +41,7 @@ object ModifierProperties {
     }
 }
 
+val fieldSize = MutableStateFlow(IntSize.Zero)
 @Composable
 fun caModifier(): Modifier {
     val background = ModifierProperties.background.collectAsState()
@@ -50,4 +53,5 @@ fun caModifier(): Modifier {
         .clip(RoundedCornerShape(shapeCorner.value))
         .background(background.value)
         .padding(padding.value)
+        .onGloballyPositioned { coordinates -> fieldSize.value = coordinates.size }
 }

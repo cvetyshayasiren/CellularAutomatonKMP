@@ -16,8 +16,11 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SheetValue
+import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -30,6 +33,8 @@ import androidx.compose.ui.unit.dp
 import cellularAutomaton.CellularAutomaton
 import cellularAutomaton.CellularAutomatonState
 import kotlinx.coroutines.launch
+import theme.defaultShapeCorner
+import kotlin.random.Random
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -40,12 +45,10 @@ fun VerticalView(caState: CellularAutomatonState, size: IntSize) {
     val scaffoldState = rememberBottomSheetScaffoldState()
 
     val buttonHeight = with(LocalDensity.current) { (size.width * .2f).toDp() }
-    val drawHeight = animateFloatAsState(
-        if(scaffoldState.bottomSheetState.hasExpandedState) .9f else .5f
-    )
+    val drawHeight = .8f
 
     BottomSheetScaffold(
-        sheetShape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
+        sheetShape = RoundedCornerShape(topStart = defaultShapeCorner, topEnd = defaultShapeCorner),
         scaffoldState = scaffoldState,
         sheetDragHandle = {
             StartButtonView(caState, buttonHeight)
@@ -73,7 +76,7 @@ fun VerticalView(caState: CellularAutomatonState, size: IntSize) {
         CellularAutomaton(
             state = caState,
             modifier = Modifier
-                .fillMaxHeight(drawHeight.value)
+                .fillMaxHeight(drawHeight)
                 .fillMaxWidth()
                 .then(caModifier())
         )
