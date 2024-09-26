@@ -1,13 +1,13 @@
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -16,22 +16,27 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Outline
+import androidx.compose.ui.graphics.Paint
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.TileMode
+import androidx.compose.ui.graphics.drawOutline
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.coerceAtLeast
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import cellularAutomaton.CaFigure
 import cellularAutomaton.CellularAutomatonState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import theme.defaultPadding
-import theme.defaultShape
-import kotlin.random.Random
 
 @Composable
 fun StartButtonView(caState: CellularAutomatonState, height: Dp) {
@@ -55,7 +60,7 @@ fun StartButtonView(caState: CellularAutomatonState, height: Dp) {
             .fillMaxWidth()
             .height(height)
             .background(
-                brush = Brush.verticalGradient(
+                brush = Brush.horizontalGradient(
                     colors = listOf(
                         colorFrom.value,
                         colorTo.value
@@ -79,11 +84,10 @@ fun StartButtonView(caState: CellularAutomatonState, height: Dp) {
                 }
             }
         ) {
-            Text(
-                text = if(isRun.value) "🛑" else "▶\uFE0F",
-                fontWeight = FontWeight.Bold,
-                fontSize = (height/3).value.sp,
-                color = textColor.value
+            PlayButton(
+                isRun = isRun.value,
+                btnSize = height/3,
+                btnColor = textColor.value
             )
         }
 
@@ -98,3 +102,49 @@ fun StartButtonView(caState: CellularAutomatonState, height: Dp) {
         }
     }
 }
+
+@Composable
+fun PlayButton(
+    isRun: Boolean,
+    btnSize: Dp,
+    btnColor: Color
+) {
+    AnimatedContent(
+        targetState = isRun,
+        modifier = Modifier.size(btnSize.coerceAtLeast(1.dp))
+    ) {run ->
+        when(run) {
+            true -> {
+                Canvas(modifier = Modifier) {
+                    drawRoundRect(
+                        color = btnColor,
+                        cornerRadius = CornerRadius(24f, 24f)
+                    )
+                }
+            }
+            false -> {
+                Canvas(modifier = Modifier) {
+                    val rect = Rect(Offset.Zero, size)
+                    val trianglePath = Path().apply {
+                        moveTo(rect.topLeft)
+                        lineTo(rect.centerRight)
+                        lineTo(rect.bottomLeft)
+                        close()
+                    }
+                    drawIntoCanvas { canvas ->
+                        canvas.drawOutline(
+                            outline = Outline.Generic(trianglePath),
+                            paint = Paint().apply {
+                                color = btnColor
+                                pathEffect = PathEffect.cornerPathEffect(rect.maxDimension / 3)
+                            }
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+fun Path.moveTo(offset: Offset) = moveTo(offset.x, offset.y)
+fun Path.lineTo(offset: Offset) = lineTo(offset.x, offset.y)

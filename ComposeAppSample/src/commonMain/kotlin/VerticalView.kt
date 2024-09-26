@@ -44,7 +44,7 @@ fun VerticalView(caState: CellularAutomatonState, size: IntSize) {
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberBottomSheetScaffoldState()
 
-    val buttonHeight = with(LocalDensity.current) { (size.width * .2f).toDp() }
+    val buttonHeight = with(LocalDensity.current) { (size.height * .2f).toDp() }
     val drawHeight = .8f
 
     BottomSheetScaffold(
