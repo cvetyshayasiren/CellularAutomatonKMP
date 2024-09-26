@@ -27,8 +27,14 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.drawOutline
+import androidx.compose.ui.graphics.drawscope.DrawStyle
+import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.coerceAtLeast
 import androidx.compose.ui.unit.dp
@@ -37,6 +43,7 @@ import cellularAutomaton.CellularAutomatonState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import theme.defaultShapeCorner
 
 @Composable
 fun StartButtonView(caState: CellularAutomatonState, height: Dp) {
@@ -92,7 +99,7 @@ fun StartButtonView(caState: CellularAutomatonState, height: Dp) {
         }
 
         IconButton(onClick = { caState.nextStep() }) {
-            Text("\uD83E\uDDB6")
+            Text(text = "\uD83E\uDDB6")
         }
         IconButton(onClick = { figure.value.randomiseState() }) {
             Text("\uD83C\uDFB2")
@@ -109,6 +116,7 @@ fun PlayButton(
     btnSize: Dp,
     btnColor: Color
 ) {
+    val radius = with(LocalDensity.current) { defaultShapeCorner.toPx() }
     AnimatedContent(
         targetState = isRun,
         modifier = Modifier.size(btnSize.coerceAtLeast(1.dp))
@@ -118,7 +126,7 @@ fun PlayButton(
                 Canvas(modifier = Modifier) {
                     drawRoundRect(
                         color = btnColor,
-                        cornerRadius = CornerRadius(24f, 24f)
+                        cornerRadius = CornerRadius(radius, radius)
                     )
                 }
             }
@@ -131,12 +139,13 @@ fun PlayButton(
                         lineTo(rect.bottomLeft)
                         close()
                     }
+
                     drawIntoCanvas { canvas ->
                         canvas.drawOutline(
                             outline = Outline.Generic(trianglePath),
                             paint = Paint().apply {
                                 color = btnColor
-                                pathEffect = PathEffect.cornerPathEffect(rect.maxDimension / 3)
+                                pathEffect = PathEffect.cornerPathEffect(radius)
                             }
                         )
                     }
