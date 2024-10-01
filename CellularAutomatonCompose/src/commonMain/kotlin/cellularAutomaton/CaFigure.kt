@@ -125,17 +125,16 @@ interface CaFigure {
     ): CaFigure {
         override var width: Int = (size.value.width/cellSize).coerceAtLeast(1)
         override var height: Int = (size.value.height/cellSize).coerceAtLeast(1)
+        override val generation: CAGeneration = CAGeneration(getRandomCellsState(fillingRatio))
         init {
             scope.launch {
                 size.collect {
                     width = it.width/cellSize
                     height = it.height/cellSize
-                    generation?.let { gen -> gen.setCellsState(getRandomCellsState(fillingRatio)) }
-//                    generation.setCellsState(getRandomCellsState(fillingRatio))
+                    generation.setCellsState(getRandomCellsState(fillingRatio))
                 }
             }
         }
-        override val generation: CAGeneration = CAGeneration(getRandomCellsState(fillingRatio))
     }
 
     class FromImageBitmap(

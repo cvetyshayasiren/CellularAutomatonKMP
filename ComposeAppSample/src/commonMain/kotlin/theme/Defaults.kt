@@ -48,6 +48,7 @@ val defaultPadding = 8.dp
 val defaultShapeCorner = 12.dp
 val defaultShape = RoundedCornerShape(defaultShapeCorner)
 val defaultShadow = 4.dp
+val defaultColorShift = .1f
 
 @Composable
 fun BigSpacer() {

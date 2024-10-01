@@ -43,6 +43,7 @@ import cellularAutomaton.CellularAutomatonState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import theme.defaultColorShift
 import theme.defaultShapeCorner
 
 @Composable
@@ -61,19 +62,19 @@ fun StartButtonView(caState: CellularAutomatonState, height: Dp) {
         if(isRun.value) MaterialTheme.colorScheme.onError.copy(alpha = .8f) else
             MaterialTheme.colorScheme.secondary.copy(alpha = .8f)
     )
+    val brush = Brush.sweepGradient(
+        colors = listOf(
+            colorFrom.value,
+            colorTo.value,
+            colorFrom.value,
+            )
+    )
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(height)
-            .background(
-                brush = Brush.horizontalGradient(
-                    colors = listOf(
-                        colorFrom.value,
-                        colorTo.value
-                    )
-                )
-            ),
+            .background(brush = brush),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ) {
@@ -157,3 +158,12 @@ fun PlayButton(
 
 fun Path.moveTo(offset: Offset) = moveTo(offset.x, offset.y)
 fun Path.lineTo(offset: Offset) = lineTo(offset.x, offset.y)
+
+fun Color.shift(fraction: Float = defaultColorShift): Color {
+    return this.copy(
+        alpha = this.alpha,
+        red = (this.red + fraction).coerceIn(0f..1f),
+        green = (this.green + fraction).coerceIn(0f..1f),
+        blue = (this.blue + fraction).coerceIn(0f..1f),
+    )
+}
