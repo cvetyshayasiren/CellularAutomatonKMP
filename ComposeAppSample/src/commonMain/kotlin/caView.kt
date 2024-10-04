@@ -20,13 +20,11 @@ import cellularAutomaton.CaRule
 import cellularAutomaton.CaRunBehaviour
 import cellularAutomaton.CaRunProperties
 import cellularAutomaton.CellularAutomatonState
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 fun CaView(
     caState: CellularAutomatonState = CellularAutomatonState(
-        figure = CaFigure.FillRandomise(size = fieldSize, cellSize = 20),
+        figure = CaFigure.FillRandomise(canvasSize = fieldSize, cellSize = 20),
         rule = CaRule(),
         cellState = CaCellState(
             color = MaterialTheme.colorScheme.primary,

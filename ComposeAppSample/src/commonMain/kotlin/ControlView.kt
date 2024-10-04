@@ -1,46 +1,22 @@
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.Divider
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import cellularAutomaton.CaFigure
 import cellularAutomaton.CellularAutomatonState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import theme.BigSpacer
 import theme.ControlCheckbox
 import theme.ControlSection
 import theme.ControlSlider
-import theme.SmallSpacer
-import theme.defaultPadding
-import theme.defaultShape
 
 @Composable
 fun ControlView(caState: CellularAutomatonState) {
@@ -50,48 +26,14 @@ fun ControlView(caState: CellularAutomatonState) {
     val cellState = caState.cellState.collectAsState()
     val fieldState = caState.fieldState.collectAsState()
     val runProperties = caState.runProperties.collectAsState()
-    val figure = caState.figure.collectAsState()
-    val rule = caState.rule.collectAsState()
+
     Column(
         Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         ControlSection(label = "Figure") {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                TextButton(
-                    onClick = {
-                        CoroutineScope(Dispatchers.IO).launch {
-                            caState.setFigure(
-                                CaFigure.FromRandom(
-                                    width = (20..100).random(),
-                                    height = (20..100).random()
-                                )
-                            )
-                        }
-                    }
-                ) {
-                    Text("Random size")
-                }
-            }
-
-            ControlSlider(
-                text = "Width ${figure.value.width}",
-                value = figure.value.width.toFloat(),
-                valueRange = (10f..200f)
-            ) { caState.setSize(width = it.toInt()) }
-
-            ControlSlider(
-                text = "Height ${figure.value.height}",
-                value = figure.value.height.toFloat(),
-                valueRange = (10f..200f)
-            ) { caState.setSize(height = it.toInt()) }
-
-            FilePickerButton(rule.value.aging) { caState.setFigure(it) }
+            FigureControlView(caState)
         }
 
         ControlSection(label = "Rule") {

@@ -13,7 +13,7 @@ sealed class CaRunBehaviour {
     data object Simple: CaRunBehaviour()
     open class Custom(
         open val cycles: CaCycles = CaCycles.Infinite,
-        val nextCycleFigure: () -> CaFigure = { CaFigure.Zero() },
+        val nextCycleFigure: () -> CaFigure = { CaFigure.Zero },
         val onCycleStart: (() -> Unit)? = null
 
     ): CaRunBehaviour() {

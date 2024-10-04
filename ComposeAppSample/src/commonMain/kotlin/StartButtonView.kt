@@ -27,18 +27,11 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.drawOutline
-import androidx.compose.ui.graphics.drawscope.DrawStyle
-import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.coerceAtLeast
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import cellularAutomaton.CellularAutomatonState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -48,7 +41,6 @@ import theme.defaultShapeCorner
 
 @Composable
 fun StartButtonView(caState: CellularAutomatonState, height: Dp) {
-    val figure = caState.figure.collectAsState()
     val isRun = caState.isRun.collectAsState()
     val textColor = animateColorAsState(
         if(isRun.value) MaterialTheme.colorScheme.error else
@@ -99,13 +91,13 @@ fun StartButtonView(caState: CellularAutomatonState, height: Dp) {
             )
         }
 
-        IconButton(onClick = { caState.nextStep() }) {
+        IconButton(onClick = { caState.nextGeneration() }) {
             Text(text = "\uD83E\uDDB6")
         }
-        IconButton(onClick = { figure.value.randomiseState() }) {
+        IconButton(onClick = { caState.figure.randomiseState() }) {
             Text("\uD83C\uDFB2")
         }
-        IconButton(onClick = { figure.value.clearState() }) {
+        IconButton(onClick = { caState.figure.clearState() }) {
             Text("\uD83D\uDDD1")
         }
     }

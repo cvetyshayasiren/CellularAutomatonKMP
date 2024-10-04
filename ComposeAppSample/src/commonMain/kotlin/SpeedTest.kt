@@ -61,7 +61,7 @@ fun SpeedTest(
             onClick = {
                 time = measureTimeMillis {
                     repeat(1_000) {
-                        caState.nextStep()
+                        caState.nextGeneration()
                     }
                 }
             }

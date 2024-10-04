@@ -17,16 +17,11 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.TextLayoutInput
-import androidx.compose.ui.text.TextLayoutResult
-import androidx.compose.ui.text.drawText
-import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
 @Composable
 fun CellularAutomaton(
@@ -37,7 +32,7 @@ fun CellularAutomaton(
     var width by remember { mutableStateOf(1.dp) }
     var height by remember { mutableStateOf(1.dp) }
     var basedOnWidth by remember { mutableStateOf(true) }
-    val figure = state.figure.collectAsState()
+    val figureSize = state.figure.size.collectAsState()
 
     Box(
         modifier = modifier
@@ -45,17 +40,17 @@ fun CellularAutomaton(
                 width = with(localDensity) { coordinates.size.width.toDp() }
                 height = with(localDensity) { coordinates.size.height.toDp() }
                 basedOnWidth =
-                    width / figure.value.width * figure.value.height < height
+                    width / figureSize.value.width * figureSize.value.height < height
             },
         contentAlignment = Alignment.Center
     ) {
         val sizeModifier = if (basedOnWidth)
             Modifier.size(
                 width = width,
-                height = width / figure.value.width * figure.value.height
+                height = width / figureSize.value.width * figureSize.value.height
             ) else
             Modifier.size(
-                width = height / figure.value.height * figure.value.width,
+                width = height / figureSize.value.height * figureSize.value.width,
                 height = height
             )
         _DrawCanvas(
@@ -73,9 +68,10 @@ private fun _DrawCanvas(
 ) {
     val cells = state.cellState.collectAsState()
     val field = state.fieldState.collectAsState()
-    val figure = state.figure.collectAsState()
+    val figure = state.figure
     val transitionColors = state.transitionColors.collectAsState()
-    val generation = state.figure.value.generation.cellsState.collectAsState()
+    val generation = state.figure.generation.collectAsState()
+    val figureSize = state.figure.size.collectAsState()
 
     var zoom by remember { mutableStateOf(1f) }
     var offsetX by remember { mutableStateOf(0f) }
@@ -96,7 +92,7 @@ private fun _DrawCanvas(
                         onGesture = { centroid, pan, gestureZoom, _ ->
                             if (field.value.isZoomable) {
                                 val oldZoom = zoom
-                                val maxZoom = figure.value.width / 10f
+                                val maxZoom = figureSize.value.width / 10f
                                 zoom = (zoom * gestureZoom).coerceIn(1f, maxZoom)
                                 offsetX =
                                     (offsetX + centroid.x / oldZoom) - (centroid.x / zoom + pan.x / oldZoom * zoom)
@@ -106,18 +102,16 @@ private fun _DrawCanvas(
                                 offsetY = offsetY.coerceIn(0f, size.height - size.height / zoom)
                             }
                             if (zoom == 1f && field.value.isDrawable) {
-                                val cellWidth = size.width.toFloat() / figure.value.width
+                                val cellWidth = size.width.toFloat() / figureSize.value.width
                                 val x = (centroid.x / cellWidth).toInt()
                                 val y = (centroid.y / cellWidth).toInt()
-                                if (x in 0 until figure.value.width
-                                    && y in 0 until figure.value.height
+                                if (x in 0 until figureSize.value.width
+                                    && y in 0 until figureSize.value.height
                                 ) {
-                                    figure.value.addFigure(
+                                    figure.addFigure(
                                         x = x,
                                         y = y,
-                                        figure = CaFigure.FromGeneration(
-                                            CAGeneration(listOf(listOf(1)))
-                                        )
+                                        figure = CaFigure.One
                                     )
                                 }
                             }
@@ -128,8 +122,8 @@ private fun _DrawCanvas(
                     detectTapGestures(
                         onTap = { tapOffset ->
                             if (field.value.isDrawable) {
-                                val cellWidth = size.width.toFloat() / figure.value.width
-                                figure.value.switchCell(
+                                val cellWidth = size.width.toFloat() / figureSize.value.width
+                                figure.switchCell(
                                     x = (tapOffset.x / cellWidth).toInt(),
                                     y = (tapOffset.y / cellWidth).toInt()
                                 )
@@ -138,7 +132,7 @@ private fun _DrawCanvas(
                             when (zoom) {
                                 1f -> {
                                     if (field.value.isZoomable) {
-                                        val maxZoom = figure.value.width / 10f
+                                        val maxZoom = figureSize.value.width / 10f
                                         zoom = maxZoom / 2
                                         offsetX = (tapOffset.x * zoom).coerceIn(
                                             0f,
@@ -159,8 +153,8 @@ private fun _DrawCanvas(
                 }
             else Modifier)
     ) {
-        val cellSizeOnCanvas = if(basedOnWidth) size.width / figure.value.width else
-            size.height / figure.value.height
+        val cellSizeOnCanvas = if(basedOnWidth) size.width / figureSize.value.width else
+            size.height / figureSize.value.height
         val cornerRadiusOnCanvas = cellSizeOnCanvas * cells.value.cornerRadius * .4f
         val margins = cellSizeOnCanvas - cellSizeOnCanvas * cells.value.marginsRatio
         val halfMargins = margins / 2
@@ -185,7 +179,7 @@ private fun _DrawCanvas(
             }
         }
         if (field.value.isDrawGrid) {
-            repeat(figure.value.width + 1) {
+            repeat(figureSize.value.width + 1) {
                 val x = cellSizeOnCanvas * it
                 drawLine(
                     color = cells.value.color,
@@ -193,7 +187,7 @@ private fun _DrawCanvas(
                     end = Offset(x, size.height)
                 )
             }
-            repeat(figure.value.height + 1) {
+            repeat(figureSize.value.height + 1) {
                 val y = cellSizeOnCanvas * it
                 drawLine(
                     color = cells.value.color,

@@ -35,16 +35,13 @@ data class CaRunProperties(
 
 @Stable
 class CellularAutomatonState(
-    figure: CaFigure = CaFigure
+    val figure: CaFigure = CaFigure
         .FromRandom(20, 20, .5f),
     rule: CaRule = CaRule(),
     cellState: CaCellState = CaCellState(),
     fieldState: CaFieldState = CaFieldState(),
     runProperties: CaRunProperties = CaRunProperties()
 ) {
-    private val _figure: MutableStateFlow<CaFigure> = MutableStateFlow(figure)
-    val figure: StateFlow<CaFigure> = _figure
-
     private val _rule: MutableStateFlow<CaRule> = MutableStateFlow(rule)
     val rule: StateFlow<CaRule> = _rule
 
@@ -67,12 +64,12 @@ class CellularAutomatonState(
         when (isRun.value) {
             true -> {
                 stop()
-                _figure.value = newFigure
+                figure.replaceFigure(newFigure)
                 _isRun.value = true
             }
 
             false -> {
-                _figure.value = newFigure
+                figure.replaceFigure(newFigure)
             }
         }
     }
@@ -81,8 +78,8 @@ class CellularAutomatonState(
         stop()
         setFigure(
             CaFigure.FromRandom(
-                width = width ?: _figure.value.width,
-                height = height ?: _figure.value.height
+                width = width ?: figure.size.value.width,
+                height = height ?: figure.size.value.height
             )
         )
     }
@@ -185,7 +182,7 @@ class CellularAutomatonState(
     private suspend fun simpleRun() {
         _isRun.value = true
         while (_isRun.value) {
-            _figure.value.nextStep(rule.value)
+            figure.nextGeneration(rule.value)
             delay(_runProperties.value.delay)
         }
     }
@@ -197,9 +194,9 @@ class CellularAutomatonState(
         }
         _isRun.value = true
         while (_isRun.value) {
-            val oldGeneration = figure.value.generation.cellsState.value
-            _figure.value.nextStep(rule.value)
-            if (oldGeneration == figure.value.generation.cellsState.value) {
+            val oldGeneration = figure.generation.value
+            figure.nextGeneration(rule.value)
+            if (oldGeneration == figure.generation.value) {
                 remainingCycles = (remainingCycles - 1).coerceAtLeast(-1)
                 when (remainingCycles) {
                     0 -> {
@@ -215,11 +212,11 @@ class CellularAutomatonState(
         }
     }
 
-    fun nextStep() {
+    fun nextGeneration() {
         if (_isRun.value) {
             return
         }
-        figure.value.nextStep(rule.value)
+        figure.nextGeneration(rule.value)
     }
 
     fun stop() {
