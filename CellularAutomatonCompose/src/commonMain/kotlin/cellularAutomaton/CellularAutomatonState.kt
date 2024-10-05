@@ -2,15 +2,30 @@ package cellularAutomaton
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.graphics.Color
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 @Composable
-fun rememberCellularAutomatonState(): CellularAutomatonState {
-    return remember { CellularAutomatonState() }
+fun rememberCellularAutomatonState(
+    figure: CaFigure = CaFigure(),
+    rule: CaRule = CaRule(),
+    cellState: CaCellState = CaCellState(),
+    fieldState: CaFieldState = CaFieldState(),
+    runProperties: CaRunProperties = CaRunProperties()
+
+): CellularAutomatonState {
+    return rememberSaveable {
+        CellularAutomatonState(
+            figure = figure,
+            rule = rule,
+            cellState = cellState,
+            fieldState = fieldState,
+            runProperties = runProperties
+        )
+    }
 }
 @Stable
 data class CaCellState(
@@ -35,8 +50,7 @@ data class CaRunProperties(
 
 @Stable
 class CellularAutomatonState(
-    val figure: CaFigure = CaFigure
-        .FromRandom(20, 20, .5f),
+    val figure: CaFigure = CaFigure(),
     rule: CaRule = CaRule(),
     cellState: CaCellState = CaCellState(),
     fieldState: CaFieldState = CaFieldState(),

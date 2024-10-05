@@ -20,11 +20,13 @@ import cellularAutomaton.CaRule
 import cellularAutomaton.CaRunBehaviour
 import cellularAutomaton.CaRunProperties
 import cellularAutomaton.CellularAutomatonState
+import cellularAutomaton.rememberCellularAutomatonState
+import theme.ControlViewParams
 
 @Composable
 fun CaView(
-    caState: CellularAutomatonState = CellularAutomatonState(
-        figure = CaFigure.FillRandomise(canvasSize = fieldSize, cellSize = 20),
+    caState: CellularAutomatonState = rememberCellularAutomatonState(
+        figure = CaFigure.FillRandomise(canvasSize = ControlViewParams.fieldSize, cellSize = 20),
         rule = CaRule(),
         cellState = CaCellState(
             color = MaterialTheme.colorScheme.primary,

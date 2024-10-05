@@ -3,13 +3,16 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import cellularAutomaton.CaFigure
 import cellularAutomaton.CellularAutomatonState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -17,15 +20,26 @@ import kotlinx.coroutines.launch
 import theme.ControlCheckbox
 import theme.ControlSection
 import theme.ControlSlider
+import theme.ControlViewParams
 
 @Composable
 fun ControlView(caState: CellularAutomatonState) {
-    val background = ModifierProperties.background.collectAsState()
     val padding = ModifierProperties.padding.collectAsState()
     val shapeCorner = ModifierProperties.shapeCorner.collectAsState()
     val cellState = caState.cellState.collectAsState()
     val fieldState = caState.fieldState.collectAsState()
     val runProperties = caState.runProperties.collectAsState()
+
+    LaunchedEffect(ControlViewParams.fieldSize) {
+        if(ControlViewParams.selectedOption == FigureControlSizeOptions.AUTO) {
+            caState.setFigure(
+                CaFigure.FillRandomise(
+                    canvasSize = ControlViewParams.fieldSize,
+                    cellSize = ControlViewParams.cellSize
+                )
+            )
+        }
+    }
 
     Column(
         Modifier.fillMaxSize(),
@@ -48,9 +62,11 @@ fun ControlView(caState: CellularAutomatonState) {
             ) {
                 RgbPicker(label = "cell color", tint = cellState.value.color) {
                     caState.setCellParams(color = it)
+                    ControlViewParams.primaryColor = it
                 }
                 RgbPicker(label = "aged cell color", tint = cellState.value.agedColor) {
                     caState.setCellParams(agedColor = it)
+                    ControlViewParams.secondaryColor = it
                 }
             }
             ControlSlider(
@@ -66,8 +82,12 @@ fun ControlView(caState: CellularAutomatonState) {
         }
 
         ControlSection(label = "Field") {
-            RgbPicker(label = "background color", tint = background.value) {
-                ModifierProperties.setBackground(it)
+            RgbPicker(
+                label = "background color",
+                tint = ControlViewParams.backgroundColor
+                    ?: MaterialTheme.colorScheme.surfaceVariant
+            ) {
+                ControlViewParams.backgroundColor = it
             }
             ControlCheckbox(
                 label = "Draw grid",
@@ -116,7 +136,7 @@ fun ControlView(caState: CellularAutomatonState) {
         TextButton(
             onClick = {
                 CoroutineScope(Dispatchers.IO).launch {
-                    ModifierProperties.setBackground(randomColor())
+                    ControlViewParams.backgroundColor = randomColor()
                     ModifierProperties.setPadding((0..100).random().dp)
                     ModifierProperties.setShapeCorner((0..500).random().dp)
                     caState.setCellParams(

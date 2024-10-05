@@ -4,18 +4,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.material3.Button
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import cellularAutomaton.CaFigure
@@ -24,6 +19,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import theme.ControlSlider
+import theme.ControlViewParams
+import theme.defaultPadding
 
 enum class FigureControlSizeOptions { MANUAL, AUTO }
 
@@ -33,19 +30,6 @@ fun FigureControlView(
 ) {
     val figureSize = caState.figure.size.collectAsState()
     val rule = caState.rule.collectAsState()
-    var selectedOption by remember { mutableStateOf(FigureControlSizeOptions.AUTO) }
-    var cellSize by remember { mutableStateOf(20) }
-
-    LaunchedEffect(fieldSize) {
-        if(selectedOption == FigureControlSizeOptions.AUTO) {
-            caState.setFigure(
-                CaFigure.FillRandomise(
-                    canvasSize = fieldSize,
-                    cellSize = cellSize
-                )
-            )
-        }
-    }
 
     Text("Size ${figureSize.value.width} x ${figureSize.value.height}")
     Row(
@@ -60,16 +44,16 @@ fun FigureControlView(
             ) {
                 Text(option.name.lowercase())
                 RadioButton(
-                    selected = option == selectedOption,
+                    selected = option == ControlViewParams.selectedOption,
                     onClick = {
-                        selectedOption = option
+                        ControlViewParams.selectedOption = option
                     }
                 )
             }
         }
     }
 
-    AnimatedContent(targetState = selectedOption, label = "AnimateOptions") {option ->
+    AnimatedContent(targetState = ControlViewParams.selectedOption, label = "AnimateOptions") {option ->
         when(option) {
             FigureControlSizeOptions.MANUAL -> {
                 Column  {
@@ -88,15 +72,15 @@ fun FigureControlView(
             }
             FigureControlSizeOptions.AUTO -> {
                 ControlSlider(
-                    text = "cellSize $cellSize",
-                    value = cellSize.toFloat(),
+                    text = "cellSize ${ControlViewParams.cellSize}",
+                    value = ControlViewParams.cellSize.toFloat(),
                     valueRange = (5f..100f)
                 ) {
-                    cellSize = it.toInt()
+                    ControlViewParams.cellSize = it.toInt()
                     caState.setFigure(
                         CaFigure.FillRandomise(
-                            canvasSize = fieldSize,
-                            cellSize = cellSize
+                            canvasSize = ControlViewParams.fieldSize,
+                            cellSize = ControlViewParams.cellSize
                         )
                     )
                 }
@@ -107,10 +91,12 @@ fun FigureControlView(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .horizontalScroll(rememberScrollState()),
+            .horizontalScroll(rememberScrollState())
+            .padding(defaultPadding),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
+        Text("add")
         (1..listOf(figureSize.value.width, figureSize.value.height).min()).forEach {
             TextButton(
                 onClick = {
@@ -119,7 +105,7 @@ fun FigureControlView(
                     )
                 }
             ) {
-                Text("add ${it}x$it")
+                Text("${it}x$it")
             }
         }
     }
@@ -131,7 +117,7 @@ fun FigureControlView(
     ) {
         TextButton(
             onClick = {
-                selectedOption = FigureControlSizeOptions.MANUAL
+                ControlViewParams.selectedOption = FigureControlSizeOptions.MANUAL
                 CoroutineScope(Dispatchers.IO).launch {
                     caState.setFigure(
                         CaFigure.FromRandom(

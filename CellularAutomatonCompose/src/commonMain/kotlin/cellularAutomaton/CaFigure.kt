@@ -4,17 +4,14 @@ import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.IntSize
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
 import kotlin.math.abs
 import kotlin.random.Random
 
 @Stable
 class CaFigure(
-    generation: List<List<Int>>
+    generation: List<List<Int>> = getRandomCellsState(.5f, 20, 20)
 ) {
     init {
         require(generation.isNotEmpty() &&
