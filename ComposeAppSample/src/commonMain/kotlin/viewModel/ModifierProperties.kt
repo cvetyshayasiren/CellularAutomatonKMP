@@ -1,3 +1,5 @@
+package viewModel
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -12,7 +14,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import theme.ControlViewParams
 import theme.defaultPadding
 import theme.defaultShadow
 
@@ -41,7 +42,7 @@ fun caModifier(): Modifier {
         .padding(defaultPadding)
         .shadow(defaultShadow, RoundedCornerShape(shapeCorner.value))
         .clip(RoundedCornerShape(shapeCorner.value))
-        .background(ControlViewParams.backgroundColor ?: MaterialTheme.colorScheme.surfaceVariant)
+        .background(ControlViewParams.fieldColor ?: MaterialTheme.colorScheme.surfaceVariant)
         .padding(padding.value)
         .onGloballyPositioned { coordinates -> ControlViewParams.fieldSize.value = coordinates.size }
 }

@@ -1,3 +1,5 @@
+package view
+
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
@@ -32,6 +34,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import theme.defaultBorder
 import theme.defaultPadding
 import theme.defaultShadow
 import theme.defaultShape
@@ -54,7 +57,7 @@ fun RgbPicker(
             .shadow(elevation = defaultShadow, shape = defaultShape)
             .clip(defaultShape)
             .background(MaterialTheme.colorScheme.surface)
-            .border(width = 2.dp, color = tint, shape = defaultShape)
+            .border(width = defaultBorder, color = tint, shape = defaultShape)
             .size(120.dp, 48.dp)
             .clickable { alert = true }
     ) {
@@ -92,7 +95,7 @@ fun RgbPicker(
                 Column(
                     modifier = Modifier
                         .clip(defaultShape)
-                        .background(tint.copy(alpha = .9f))
+                        .background(tint.copy(alpha = .95f))
                         .padding(defaultPadding * 2),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally

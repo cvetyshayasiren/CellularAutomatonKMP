@@ -2,6 +2,7 @@ package cellularAutomaton
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.graphics.Color
 import kotlinx.coroutines.delay
@@ -17,7 +18,7 @@ fun rememberCellularAutomatonState(
     runProperties: CaRunProperties = CaRunProperties()
 
 ): CellularAutomatonState {
-    return rememberSaveable {
+    return remember {
         CellularAutomatonState(
             figure = figure,
             rule = rule,

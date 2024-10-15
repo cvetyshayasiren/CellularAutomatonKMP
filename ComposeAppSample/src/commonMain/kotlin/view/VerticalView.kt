@@ -1,3 +1,5 @@
+package view
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -19,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntSize
+import viewModel.caModifier
 import cellularAutomaton.CellularAutomaton
 import cellularAutomaton.CellularAutomatonState
 import kotlinx.coroutines.launch

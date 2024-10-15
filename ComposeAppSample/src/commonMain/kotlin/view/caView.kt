@@ -1,3 +1,5 @@
+package view
+
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,7 +23,7 @@ import cellularAutomaton.CaRunBehaviour
 import cellularAutomaton.CaRunProperties
 import cellularAutomaton.CellularAutomatonState
 import cellularAutomaton.rememberCellularAutomatonState
-import theme.ControlViewParams
+import viewModel.ControlViewParams
 
 @Composable
 fun CaView(

@@ -1,3 +1,5 @@
+package view
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,7 +15,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import cellularAutomaton.CellularAutomatonState
-import theme.ControlSlider
 import theme.defaultPadding
 
 @Composable

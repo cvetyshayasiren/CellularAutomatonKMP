@@ -1,6 +1,5 @@
 package theme
 
-import FigureControlSizeOptions
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
@@ -44,16 +43,9 @@ val defaultPadding = 8.dp
 val defaultShapeCorner = 12.dp
 val defaultShape = RoundedCornerShape(defaultShapeCorner)
 val defaultShadow = 4.dp
-val defaultColorShift = .1f
+val defaultBorder = 2.dp
+const val defaultColorShift = .1f
 
-object ControlViewParams {
-    val fieldSize = MutableStateFlow(IntSize.Zero)
-    var selectedOption = FigureControlSizeOptions.AUTO
-    var cellSize = 20
-    var backgroundColor: Color? by mutableStateOf(null)
-    var primaryColor: Color? by mutableStateOf(null)
-    var secondaryColor: Color? by mutableStateOf(null)
-}
 
 @Composable
 fun BigSpacer() {
@@ -63,104 +55,4 @@ fun BigSpacer() {
 @Composable
 fun SmallSpacer() {
     Spacer(Modifier.size(defaultPadding * 2))
-}
-
-@Composable
-fun ControlSlider(
-    text: String,
-    value: Float,
-    valueRange:  ClosedFloatingPointRange<Float>,
-    onValueChange: suspend (Float) -> Unit
-) {
-    Column(
-        modifier = Modifier
-            .padding(vertical = defaultPadding)
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.onBackground.copy(alpha = .05f))
-            .padding(defaultPadding / 2),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = text,
-            modifier = Modifier.fillMaxWidth().padding(horizontal = defaultPadding),
-            fontSize = MaterialTheme.typography.labelMedium.fontSize
-        )
-        Slider(
-            value = value,
-            onValueChange = {
-                CoroutineScope(Dispatchers.Default).launch { onValueChange(it) }
-            },
-            valueRange = valueRange
-        )
-    }
-}
-
-@Composable
-fun ControlCheckbox(
-    label: String,
-    checked: Boolean,
-    onClick: () -> Unit,
-    onCheckedChange: ((Boolean) -> Unit)?
-) {
-    TextButton(
-        modifier = Modifier.fillMaxWidth(),
-        onClick = onClick
-    ) {
-        Text(label)
-        Spacer(Modifier.weight(1f))
-        Checkbox(
-            checked = checked,
-            onCheckedChange = onCheckedChange
-        )
-    }
-}
-
-@Composable
-fun ControlSection(label: String, content: @Composable() (ColumnScope.() -> Unit)) {
-    var expanded by remember { mutableStateOf(false) }
-    val arrowDegree by animateFloatAsState(if(expanded) 180f else 0f)
-    Column(
-        modifier = Modifier
-            .fillMaxWidth(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        TextButton(
-            shape = RectangleShape,
-            onClick = {
-                expanded = !expanded
-            }
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    text = label,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                    color = MaterialTheme.colorScheme.onSurface,
-                )
-                Icon(
-                    modifier = Modifier.rotate(arrowDegree),
-                    imageVector = Icons.Default.KeyboardArrowDown,
-                    contentDescription = "ControlSectionIcon"
-                )
-            }
-        }
-
-        AnimatedVisibility(visible = expanded) {
-            Column(
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                SmallSpacer()
-                content()
-                SmallSpacer()
-                HorizontalDivider()
-            }
-        }
-    }
 }

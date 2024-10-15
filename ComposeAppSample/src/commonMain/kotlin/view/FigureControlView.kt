@@ -1,3 +1,5 @@
+package view
+
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -18,11 +20,9 @@ import cellularAutomaton.CellularAutomatonState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import theme.ControlSlider
-import theme.ControlViewParams
 import theme.defaultPadding
-
-enum class FigureControlSizeOptions { MANUAL, AUTO }
+import viewModel.ControlViewParams
+import viewModel.FigureControlSizeOptions
 
 @Composable
 fun FigureControlView(

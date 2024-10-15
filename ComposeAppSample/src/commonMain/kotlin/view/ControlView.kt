@@ -1,3 +1,6 @@
+package view
+
+import viewModel.ModifierProperties
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,10 +20,8 @@ import cellularAutomaton.CellularAutomatonState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import theme.ControlCheckbox
-import theme.ControlSection
-import theme.ControlSlider
-import theme.ControlViewParams
+import viewModel.ControlViewParams
+import viewModel.FigureControlSizeOptions
 
 @Composable
 fun ControlView(caState: CellularAutomatonState) {
@@ -62,11 +63,9 @@ fun ControlView(caState: CellularAutomatonState) {
             ) {
                 RgbPicker(label = "cell color", tint = cellState.value.color) {
                     caState.setCellParams(color = it)
-                    ControlViewParams.primaryColor = it
                 }
                 RgbPicker(label = "aged cell color", tint = cellState.value.agedColor) {
                     caState.setCellParams(agedColor = it)
-                    ControlViewParams.secondaryColor = it
                 }
             }
             ControlSlider(
@@ -84,10 +83,10 @@ fun ControlView(caState: CellularAutomatonState) {
         ControlSection(label = "Field") {
             RgbPicker(
                 label = "background color",
-                tint = ControlViewParams.backgroundColor
+                tint = ControlViewParams.fieldColor
                     ?: MaterialTheme.colorScheme.surfaceVariant
             ) {
-                ControlViewParams.backgroundColor = it
+                ControlViewParams.fieldColor = it
             }
             ControlCheckbox(
                 label = "Draw grid",
@@ -136,7 +135,7 @@ fun ControlView(caState: CellularAutomatonState) {
         TextButton(
             onClick = {
                 CoroutineScope(Dispatchers.IO).launch {
-                    ControlViewParams.backgroundColor = randomColor()
+                    ControlViewParams.fieldColor = randomColor()
                     ModifierProperties.setPadding((0..100).random().dp)
                     ModifierProperties.setShapeCorner((0..500).random().dp)
                     caState.setCellParams(

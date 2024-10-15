@@ -1,3 +1,5 @@
+package view
+
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -20,6 +22,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import viewModel.caModifier
 import cellularAutomaton.CellularAutomaton
 import cellularAutomaton.CellularAutomatonState
 
