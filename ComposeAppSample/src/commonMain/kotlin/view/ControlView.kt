@@ -132,25 +132,8 @@ fun ControlView(caState: CellularAutomatonState) {
             ) { caState.setRunProperties(delay = it.toLong()) }
         }
 
-        TextButton(
-            onClick = {
-                CoroutineScope(Dispatchers.IO).launch {
-                    ControlViewParams.fieldColor = randomColor()
-                    ModifierProperties.setPadding((0..100).random().dp)
-                    ModifierProperties.setShapeCorner((0..500).random().dp)
-                    caState.setCellParams(
-                        color = randomColor(),
-                        agedColor = randomColor(),
-                        cornerRadius = (0..100).random()/100f,
-                        marginsRatio = (0..200).random()/100f
-                    )
-                    caState.setFieldParams(
-                        isDrawGrid = listOf(true, false).random()
-                    )
-                }
-            }
-        ) {
-            Text("Super random")
+        ControlSection(label = "Randomisation") {
+            RandomisationView(caState)
         }
     }
 }

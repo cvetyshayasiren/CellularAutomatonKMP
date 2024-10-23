@@ -32,7 +32,7 @@ fun CaView(
         rule = CaRule(),
         cellState = CaCellState(
             color = MaterialTheme.colorScheme.primary,
-            agedColor = MaterialTheme.colorScheme.secondary,
+            agedColor = MaterialTheme.colorScheme.onPrimary,
             cornerRadius = .5f,
             marginsRatio = .9f
         ),

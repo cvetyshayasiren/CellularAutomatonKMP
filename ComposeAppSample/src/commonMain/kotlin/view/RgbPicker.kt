@@ -8,6 +8,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BasicAlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -40,7 +43,11 @@ import theme.defaultShadow
 import theme.defaultShape
 import theme.defaultShapeCorner
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+val colors = listOf(Color.Black, Color.White, Color.Red, Color.Green, Color.Blue)
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class,
+    ExperimentalLayoutApi::class
+)
 @Composable
 fun RgbPicker(
     label: String,
@@ -136,6 +143,20 @@ fun RgbPicker(
                         ),
                         thumb = { MyThumb((tint.blue * 255).toInt(), Color.Blue) }
                     )
+
+                    FlowRow {
+                        colors.forEach { color ->
+                            Button(
+                                modifier = Modifier
+                                    .padding(defaultPadding)
+                                    .size(defaultPadding * 4),
+                                shape = defaultShape,
+                                colors = ButtonDefaults.buttonColors(containerColor = color),
+                                onClick = { onClick(color) },
+                            ) { }
+                        }
+                    }
+
                     Row(
                         Modifier.fillMaxWidth(.9f),
                         horizontalArrangement = Arrangement.SpaceEvenly
